@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-spectral: 'Spectral', serif;
+    --font-public-sans: 'Public Sans', sans-serif;
+    --font-ibm-plex-mono: 'IBM Plex Mono', monospace;
+
+    --bg-main: #FAFAF7;
+    --surface: #FFFFFF;
+    --panel: #F2F4F0;
+    --ink: #191C1A;
+    --body-text: #3D423D;
+    --muted: #5A6058;
+    --faint: #8A8F87;
+    --border-main: #E3E6E1;
+    --border-light: #EDEFEA;
+    --accent: oklch(0.48 0.10 160);
+    --accent-dark: oklch(0.42 0.10 160);
+    --fail: #B3261E;
+    --fail-bg: oklch(0.95 0.02 25);
+    --warn: #B45309;
+  }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background-color: #FAFAF7;
+    color: #191C1A;
+    font-family: var(--font-public-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: oklch(0.48 0.10 160);
+    text-decoration: none;
+  }
+
+  a:hover {
+    color: oklch(0.42 0.10 160);
+  }
+
+  ::selection {
+    background: oklch(0.90 0.05 160);
+  }
+}
+
+.font-serif {
+  font-family: var(--font-spectral);
+}
+
+.font-sans {
+  font-family: var(--font-public-sans);
+}
+
+.font-mono {
+  font-family: var(--font-ibm-plex-mono);
+}
+
+@media print {
+  #backbar {
+    display: none !important;
+  }
+  body {
+    background: white !important;
+  }
+}
+
+.evd {
+  break-inside: avoid;
+}
+
+.page-break {
+  break-before: page;
+}

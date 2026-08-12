@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600&amp;family=Public+Sans:wght@400;500;600;700&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0;background:#FAFAF7;color:#191C1A;font-family:'Public Sans',sans-serif;}
+  a{color:oklch(0.48 0.10 160);text-decoration:none;}
+  a:hover{color:oklch(0.38 0.10 160);text-decoration:underline;}
+  ::selection{background:oklch(0.90 0.05 160);}
+</style>
+</helmet>
+<div style="min-height:100vh;background:#FAFAF7;color:#191C1A;font-family:'Public Sans',sans-serif;-webkit-font-smoothing:antialiased">
+
+  <header style="display:flex;align-items:center;justify-content:space-between;gap:24px;max-width:1080px;margin:0 auto;padding:22px 32px">
+    <div style="display:flex;align-items:baseline;gap:10px">
+      <span style="font-family:'Spectral',serif;font-weight:600;font-size:20px;letter-spacing:-0.01em">AgentReady Local</span>
+      <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#5A6058">by MetalMindTech</span>
+    </div>
+    <nav style="display:flex;gap:26px;font-size:14px;font-weight:500">
+      <a href="#how" style="color:#191C1A" style-hover="color:oklch(0.48 0.10 160)">How it works</a>
+      <a href="#rubric" style="color:#191C1A" style-hover="color:oklch(0.48 0.10 160)">The 100-point audit</a>
+      <a href="#pricing" style="color:#191C1A" style-hover="color:oklch(0.48 0.10 160)">Pricing</a>
+      <a href="Verified Audit Report.dc.html" style="color:oklch(0.48 0.10 160);font-weight:600">Sample report →</a>
+    </nav>
+  </header>
+
+  <section style="max-width:1080px;margin:0 auto;padding:64px 32px 56px;display:grid;grid-template-columns:1.15fr 0.85fr;gap:56px;align-items:start">
+    <div style="display:flex;flex-direction:column;gap:22px">
+      <div style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.48 0.10 160);font-weight:600">AI-readiness for med spas · Twin Cities</div>
+      <h1 style="font-family:'Spectral',serif;font-weight:500;font-size:46px;line-height:1.12;margin:0;letter-spacing:-0.015em;text-wrap:balance">When someone asks ChatGPT for the best med spa in Edina, does it know you exist?</h1>
+      <p style="font-size:17px;line-height:1.6;color:#3D423D;margin:0;max-width:52ch;text-wrap:pretty">AI assistants can't reliably read most med spa websites — services, prices, credentials, and booking paths are invisible to them. We make your business facts machine-readable, and prove it with before/after tests.</p>
+      <div style="display:flex;gap:14px;align-items:center;font-size:13px;color:#5A6058">
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.48 0.10 160)"></span>Flat-fee builds</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.48 0.10 160)"></span>Evidence for every claim</span>
+        <span style="display:inline-flex;align-items:center;gap:6px"><span style="width:6px;height:6px;border-radius:50%;background:oklch(0.48 0.10 160)"></span>No ranking promises</span>
+      </div>
+    </div>
+
+    <div style="background:#FFFFFF;border:1px solid #E3E6E1;border-radius:14px;padding:28px;display:flex;flex-direction:column;gap:16px;box-shadow:0 1px 2px rgba(20,25,20,0.04),0 8px 28px rgba(20,25,20,0.05)">
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <div style="font-weight:700;font-size:16px">Free surface scan</div>
+        <div style="font-size:13.5px;color:#5A6058;line-height:1.5">Enter your website. We check what AI agents can actually read — in about 30 seconds.</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <input value="{{ domain }}" onChange="{{ onDomain }}" onKeyDown="{{ onKey }}" placeholder="yourmedspa.com" style="flex:1;min-width:0;padding:12px 14px;border:1px solid #D4D8D2;border-radius:8px;font-size:15px;font-family:'IBM Plex Mono',monospace;background:#FAFAF7;color:#191C1A;outline:none" style-focus="border-color:oklch(0.48 0.10 160)">
+        <button onClick="{{ runScan }}" style="padding:12px 18px;border:none;border-radius:8px;background:oklch(0.48 0.10 160);color:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:'Public Sans',sans-serif;white-space:nowrap" style-hover="background:oklch(0.42 0.10 160)">Scan free</button>
+      </div>
+
+      <sc-if value="{{ isRunning }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:#3D423D;background:#F2F4F0;border-radius:8px;padding:14px">
+          <sc-for list="{{ checkLog }}" as="line" hint-placeholder-count="1">
+            <div style="display:flex;gap:8px;align-items:baseline"><span style="color:oklch(0.48 0.10 160)">✓</span><span>{{ line }}</span></div>
+          </sc-for>
+          <div style="display:flex;gap:8px;align-items:baseline;color:#8A8F87"><span>…</span><span>{{ currentCheck }}</span></div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;align-items:center;gap:16px;background:#F2F4F0;border-radius:10px;padding:16px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px;min-width:74px">
+              <div style="font-family:'Spectral',serif;font-size:34px;font-weight:600;color:#B3261E;line-height:1">{{ score }}</div>
+              <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:#5A6058">of 100</div>
+            </div>
+            <div style="font-size:13.5px;line-height:1.5;color:#3D423D"><strong style="color:#191C1A">{{ scanDomain }}</strong> is mostly invisible to AI agents. Surface scan found {{ gapCount }} critical gaps:</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ gaps }}" as="gap" hint-placeholder-count="3">
+              <div style="display:flex;gap:10px;align-items:baseline;font-size:13.5px;line-height:1.45">
+                <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:#B3261E;background:oklch(0.95 0.02 25);border-radius:4px;padding:2px 6px;white-space:nowrap">{{ gap.code }}</span>
+                <span style="color:#3D423D">{{ gap.text }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <a href="#pricing" style="display:block;text-align:center;padding:13px;border-radius:8px;background:#191C1A;color:#fff;font-size:14px;font-weight:600" style-hover="background:#000;color:#fff;text-decoration:none">Get the full 100-point Verified Audit — $297</a>
+          <div style="font-size:12px;color:#8A8F87;text-align:center">The full audit re-runs every check with screenshots and timestamps.</div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isIdle }}" hint-placeholder-val="{{ true }}">
+        <div style="font-size:12px;color:#8A8F87;line-height:1.5">Checks schema markup, service catalog, pricing visibility, credentials, booking path, and crawl policy. No signup required.</div>
+      </sc-if>
+    </div>
+  </section>
+
+  <section style="background:#191C1A;color:#F5F6F3">
+    <div style="max-width:1080px;margin:0 auto;padding:56px 32px;display:flex;flex-direction:column;gap:18px">
+      <div style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:oklch(0.72 0.09 160);font-weight:600">Our promise — verifiable, no dead claims</div>
+      <p style="font-family:'Spectral',serif;font-size:27px;line-height:1.4;font-weight:400;margin:0;max-width:60ch;text-wrap:pretty">"Your services, prices, policies, credentials, and booking actions are presented accurately to machines — and we show you exactly what agents can and cannot understand, before and after."</p>
+      <p style="font-size:14px;color:#A9AEA6;margin:0;max-width:64ch;line-height:1.6">We do not promise rankings. AI engines are third parties we don't control. We promise implementation, monitoring, testing, and remediation — every stated fact carries its source, timestamp, and verification status.</p>
+    </div>
+  </section>
+
+  <section id="how" style="max-width:1080px;margin:0 auto;padding:72px 32px 24px">
+    <h2 style="font-family:'Spectral',serif;font-size:32px;font-weight:500;margin:0 0 32px;letter-spacing:-0.01em">How it works</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+      <div style="background:#fff;border:1px solid #E3E6E1;border-radius:12px;padding:26px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:oklch(0.48 0.10 160)">01 — AUDIT</div>
+        <div style="font-weight:700;font-size:17px">See what agents see</div>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:#5A6058">100-point scored rubric. Every point is a reproducible test with screenshot evidence and timestamps — including live queries to ChatGPT, Perplexity, and Google AI.</p>
+        <a href="Verified Audit Report.dc.html" style="font-size:13.5px;font-weight:600">View a sample report →</a>
+      </div>
+      <div style="background:#fff;border:1px solid #E3E6E1;border-radius:12px;padding:26px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:oklch(0.48 0.10 160)">02 — INSTALL</div>
+        <div style="font-weight:700;font-size:17px">Make your facts machine-readable</div>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:#5A6058">Schema graph, service catalog, pricing model, FAQ and policy normalization, llms.txt, crawl policy — built from verified records, delivered flat-fee with a before/after test suite.</p>
+      </div>
+      <div style="background:#fff;border:1px solid #E3E6E1;border-radius:12px;padding:26px;display:flex;flex-direction:column;gap:12px">
+        <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:oklch(0.48 0.10 160)">03 — MONITOR</div>
+        <div style="font-weight:700;font-size:17px">Stay accurate as engines change</div>
+        <p style="margin:0;font-size:14px;line-height:1.6;color:#5A6058">Monthly citation re-tests, broken-schema alerts, and freshness checks. You get the same evidence format every month: what changed, what broke, what we fixed.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="rubric" style="max-width:1080px;margin:0 auto;padding:56px 32px 24px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:28px">
+      <h2 style="font-family:'Spectral',serif;font-size:32px;font-weight:500;margin:0;letter-spacing:-0.01em">The 100-point rubric</h2>
+      <div style="font-size:13.5px;color:#5A6058">Every point = one reproducible test. Evidence stored per audit.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px">
+      <sc-for list="{{ rubric }}" as="cat" hint-placeholder-count="8">
+        <div style="background:#fff;border:1px solid #E3E6E1;border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:8px">
+          <div style="display:flex;align-items:baseline;justify-content:space-between;gap:8px">
+            <span style="font-weight:600;font-size:14px">{{ cat.name }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;font-size:13px;color:oklch(0.48 0.10 160);font-weight:500">{{ cat.pts }}</span>
+          </div>
+          <div style="font-size:12.5px;line-height:1.5;color:#5A6058">{{ cat.desc }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="margin-top:20px;background:#F2F4F0;border-radius:10px;padding:18px 22px;font-size:13.5px;line-height:1.6;color:#3D423D;display:flex;gap:12px;align-items:baseline">
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.06em;color:oklch(0.48 0.10 160);white-space:nowrap">SECURITY RULE</span>
+      <span>Every exposed resource is classified: public facts are free, booking is controlled, customer data is private. Cheap scanners skip this — we don't.</span>
+    </div>
+  </section>
+
+  <section id="pricing" style="max-width:1080px;margin:0 auto;padding:56px 32px 24px">
+    <h2 style="font-family:'Spectral',serif;font-size:32px;font-weight:500;margin:0 0 32px;letter-spacing:-0.01em">Pricing</h2>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;align-items:stretch">
+      <div style="background:#fff;border:1px solid #E3E6E1;border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:13px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:#5A6058">Surface scan</div>
+        <div style="font-family:'Spectral',serif;font-size:30px;font-weight:600">Free</div>
+        <div style="font-size:13.5px;line-height:1.55;color:#5A6058;flex:1">Instant score plus your three most critical gaps. No signup.</div>
+        <a href="#top" onClick="{{ scrollTop }}" style="font-size:13.5px;font-weight:600">Run it above ↑</a>
+      </div>
+      <div style="background:#fff;border:2px solid oklch(0.48 0.10 160);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:10px;position:relative">
+        <div style="position:absolute;top:-11px;left:20px;background:oklch(0.48 0.10 160);color:#fff;font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;border-radius:99px;padding:3px 10px">Start here</div>
+        <div style="font-size:13px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:#5A6058">Verified Audit</div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Spectral',serif;font-size:30px;font-weight:600">$297</span><span style="font-size:12.5px;color:#8A8F87">$750 multi-location</span></div>
+        <div style="font-size:13.5px;line-height:1.55;color:#5A6058;flex:1">100-point scored report with live AI-engine test screenshots, timestamps, and a prioritized gap list.</div>
+        <a href="Verified Audit Report.dc.html" style="display:block;text-align:center;padding:11px;border-radius:8px;background:oklch(0.48 0.10 160);color:#fff;font-size:14px;font-weight:600" style-hover="background:oklch(0.42 0.10 160);color:#fff;text-decoration:none">See a sample</a>
+      </div>
+      <div style="background:#fff;border:1px solid #E3E6E1;border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:13px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:#5A6058">Install</div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Spectral',serif;font-size:30px;font-weight:600">$1,500</span><span style="font-size:12.5px;color:#8A8F87">Starter · $3,500 Professional</span></div>
+        <div style="font-size:13.5px;line-height:1.55;color:#5A6058;flex:1">Schema graph, service catalog, pricing model, FAQ/policy normalization, llms.txt, crawl policy, before/after test suite. Flat fee.</div>
+      </div>
+      <div style="background:#fff;border:1px solid #E3E6E1;border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:13px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:#5A6058">Monitor</div>
+        <div style="display:flex;align-items:baseline;gap:8px"><span style="font-family:'Spectral',serif;font-size:30px;font-weight:600">$249</span><span style="font-size:12.5px;color:#8A8F87">–$499 / mo</span></div>
+        <div style="font-size:13.5px;line-height:1.55;color:#5A6058;flex:1">Monthly citation re-tests, broken-schema alerts, freshness checks — same evidence format, every month.</div>
+      </div>
+    </div>
+  </section>
+
+  <section style="max-width:1080px;margin:0 auto;padding:56px 32px 80px">
+    <div style="background:#fff;border:1px solid #E3E6E1;border-radius:14px;padding:40px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:center">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <h2 style="font-family:'Spectral',serif;font-size:26px;font-weight:500;margin:0;letter-spacing:-0.01em">Watch it happen live</h2>
+        <p style="margin:0;font-size:15px;line-height:1.6;color:#5A6058;max-width:58ch">Book 20 minutes. We'll ask ChatGPT "best med spa in your city" while you watch, then show you exactly why it answered the way it did — and what changes it.</p>
+      </div>
+      <a href="#top" onClick="{{ scrollTop }}" style="padding:14px 26px;border-radius:8px;background:#191C1A;color:#fff;font-size:15px;font-weight:600;white-space:nowrap" style-hover="background:#000;color:#fff;text-decoration:none">Book the live demo</a>
+    </div>
+  </section>
+
+  <footer style="border-top:1px solid #E3E6E1">
+    <div style="max-width:1080px;margin:0 auto;padding:26px 32px;display:flex;justify-content:space-between;gap:24px;font-size:12.5px;color:#8A8F87;flex-wrap:wrap">
+      <span>© 2026 MetalMindTech LLC · Twin Cities, MN</span>
+      <span>Med spa vertical only · One practice standard per engagement</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;demoDomain&quot;: {&quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;lakeshoreskin.com&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;Demo&quot;}}">
+class Component extends DCLogic {
+  state = { domain: "", phase: "idle", checkLog: [], currentCheck: "", score: 0, gaps: [], scanDomain: "" };
+  checks = [
+    "Fetching homepage + service pages",
+    "Parsing JSON-LD / schema markup",
+    "Locating service catalog + pricing",
+    "Checking practitioner credentials",
+    "Tracing booking path for agents",
+    "Reading robots.txt / llms.txt crawl policy"
+  ];
+  gapPool = [
+    { code: "SVC-04", text: "No structured service catalog — agents can't list what you offer or at what price." },
+    { code: "IDN-02", text: "Business identity schema missing NAP consistency — agents can't confirm you're the same entity across sources." },
+    { code: "ACT-01", text: "Booking path is JavaScript-only — no machine-readable action an agent can complete or cite." },
+    { code: "TRS-03", text: "Practitioner credentials are in images, not text — invisible to every AI engine." },
+    { code: "CRL-01", text: "No llms.txt and restrictive robots rules — AI crawlers are partially blocked from your own facts." },
+    { code: "FRS-01", text: "Pricing page last updated signal missing — engines treat your prices as stale." }
+  ];
+  componentWillUnmount() { clearTimeout(this.t); }
+  hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; }
+  runScan = () => {
+    const d = (this.state.domain || this.props.demoDomain || "lakeshoreskin.com").trim().replace(/^https?:\/\//, "");
+    clearTimeout(this.t);
+    this.setState({ phase: "running", checkLog: [], currentCheck: this.checks[0], scanDomain: d });
+    let i = 0;
+    const step = () => {
+      i++;
+      if (i < this.checks.length) {
+        this.setState(s => ({ checkLog: [...s.checkLog, this.checks[i - 1]], currentCheck: this.checks[i] }));
+        this.t = setTimeout(step, 550);
+      } else {
+        const h = this.hash(d);
+        const score = 24 + (h % 34);
+        const idx = [h % 6, (h >> 3) % 6, (h >> 6) % 6];
+        const seen = new Set(); const gaps = [];
+        for (const j of idx) { let k = j; while (seen.has(k)) k = (k + 1) % 6; seen.add(k); gaps.push(this.gapPool[k]); }
+        this.setState({ phase: "done", score, gaps });
+      }
+    };
+    this.t = setTimeout(step, 550);
+  };
+  renderVals() {
+    const p = this.state.phase;
+    return {
+      domain: this.state.domain,
+      onDomain: e => this.setState({ domain: e.target.value }),
+      onKey: e => { if (e.key === "Enter") this.runScan(); },
+      runScan: this.runScan,
+      isIdle: p === "idle", isRunning: p === "running", isDone: p === "done",
+      checkLog: this.state.checkLog, currentCheck: this.state.currentCheck,
+      score: this.state.score, scanDomain: this.state.scanDomain,
+      gaps: this.state.gaps, gapCount: this.state.gaps.length,
+      scrollTop: e => { e.preventDefault(); document.documentElement.scrollTo({ top: 0, behavior: "smooth" }); },
+      rubric: [
+        { name: "Identity", pts: "15", desc: "Legal name, locations, NAP consistency, entity disambiguation." },
+        { name: "Services + pricing", pts: "15", desc: "Structured catalog with prices agents can quote accurately." },
+        { name: "Trust", pts: "15", desc: "Credentials, licensure, reviews — in text, with sources." },
+        { name: "Machine-readable content", pts: "15", desc: "FAQ, policies, and pages agents can parse and cite." },
+        { name: "Actions", pts: "15", desc: "A booking path an agent can find, describe, and complete." },
+        { name: "Crawl policy", pts: "10", desc: "robots.txt and llms.txt that let AI engines read your facts." },
+        { name: "Security", pts: "10", desc: "Public facts free; booking controlled; customer data private." },
+        { name: "Freshness", pts: "5", desc: "Update signals so engines trust prices aren't stale." }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
