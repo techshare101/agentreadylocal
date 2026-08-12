@@ -1,10 +1,7 @@
-import Link from "next/link";
-import { Metadata } from "next";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Verified Audit Report — AgentReady Local | MetalMindTech LLC",
-  description: "100-point scored AI-readiness audit report for medical spa and aesthetic practice.",
-};
+import Link from "next/link";
+import { useParams, useSearchParams } from "next/navigation";
 
 interface ClinicData {
   name: string;
@@ -119,24 +116,23 @@ function EvidenceBlock({
   );
 }
 
-export default async function DynamicReportPage({
-  params,
-  searchParams,
-}: {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ name?: string; domain?: string; location?: string; score?: string }>;
-}) {
-  const resolvedParams = await params;
-  const resolvedSearchParams = await searchParams;
+export default function DynamicReportPage() {
+  const routeParams = useParams();
+  const searchParams = useSearchParams();
 
-  const slug = resolvedParams.slug.toLowerCase();
+  const slugParam = (routeParams?.slug as string) || "lakeshore-skin";
+  const slug = slugParam.toLowerCase();
   const preset = PRESET_CLINICS[slug];
 
-  // Dynamic fallback for any clinic slug or URL parameters
-  const name = resolvedSearchParams.name || preset?.name || slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-  const domain = resolvedSearchParams.domain || preset?.domain || `${slug.replace(/[^a-z0-index]/g, "")}.com`;
-  const location = resolvedSearchParams.location || preset?.location || "High-Growth Metro Market · single location";
-  const score = resolvedSearchParams.score ? parseInt(resolvedSearchParams.score, 10) : preset?.score || 38;
+  const qName = searchParams?.get("name");
+  const qDomain = searchParams?.get("domain");
+  const qLocation = searchParams?.get("location");
+  const qScore = searchParams?.get("score");
+
+  const name = qName || preset?.name || slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  const domain = qDomain || preset?.domain || `${slug.replace(/[^a-z0-9]/g, "")}.com`;
+  const location = qLocation || preset?.location || "High-Growth Metro Market · single location";
+  const score = qScore ? parseInt(qScore, 10) : preset?.score || 38;
   const reportId = preset?.reportId || `ARL-2026-${Math.floor(1000 + Math.random() * 9000)}`;
   const auditDate = preset?.auditDate || new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
   const summary =
@@ -146,7 +142,7 @@ export default async function DynamicReportPage({
   return (
     <div className="min-h-screen bg-[#FAFAF7] text-[#191C1A] font-sans selection:bg-[oklch(0.90_0.05_160)]">
       {/* Backbar */}
-      <div id="backbar" className="flex justify-between items-center px-8 py-3.5 text-[13px] border-b border-[#E3E6E1] bg-white font-mono">
+      <div id="backbar" className="flex justify-between items-center px-8 py-3.5 text-[13px] border-b border-[#E3E6E1] bg-white font-mono print:hidden">
         <div className="flex items-center gap-4">
           <Link href="/" className="text-[oklch(0.48_0.10_160)] font-medium hover:underline flex items-center gap-1">
             ← Back to AgentReady Local
