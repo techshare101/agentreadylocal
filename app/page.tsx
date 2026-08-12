@@ -166,39 +166,39 @@ export default function FunnelPage() {
             <span className="text-[11px] tracking-[0.08em] uppercase text-[#5A6058] font-mono">by MetalMindTech</span>
           </div>
         </div>
-        <nav className="flex items-center gap-[26px] text-[14px] font-medium">
-          <a href="#how" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors">
+        <nav className="flex items-center gap-3 md:gap-[26px] text-[13px] md:text-[14px] font-medium">
+          <a href="#how" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors hidden sm:inline">
             How it works
           </a>
-          <a href="#rubric" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors">
+          <a href="#rubric" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors hidden sm:inline">
             100-point audit
           </a>
-          <a href="#flywheel" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors hidden md:inline">
+          <a href="#flywheel" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors hidden lg:inline">
             Evidence engine
           </a>
-          <a href="#pricing" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors">
+          <a href="#pricing" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors hidden sm:inline">
             Pricing
           </a>
-          <Link href="/sample-report" className="text-[oklch(0.48_0.10_160)] font-semibold hover:underline flex items-center gap-1">
+          <Link href="/sample-report" className="text-[oklch(0.48_0.10_160)] font-semibold hover:underline flex items-center gap-1 whitespace-nowrap">
             Sample report <span className="text-xs">→</span>
           </Link>
         </nav>
       </header>
 
       {/* Hero & Surface Scan */}
-      <section className="max-w-[1080px] mx-auto px-8 pt-12 pb-[56px] grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-[56px] items-start">
+      <section className="max-w-[1080px] mx-auto px-4 sm:px-8 pt-8 sm:pt-12 pb-[56px] grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-[40px] lg:gap-[56px] items-start">
         {/* Left Hero Column */}
         <div className="flex flex-col gap-[22px]">
           <div className="inline-flex items-center gap-2 text-[12px] tracking-[0.1em] uppercase text-[oklch(0.48_0.10_160)] font-semibold font-mono bg-[oklch(0.96_0.03_160)] px-3 py-1 rounded-full w-fit">
             AI-Readiness for Med Spas &amp; Aesthetic Practices
           </div>
-          <h1 className="font-serif font-medium text-[44px] sm:text-[48px] leading-[1.12] tracking-[-0.015em] text-balance text-[#191C1A]">
+          <h1 className="font-serif font-medium text-[34px] sm:text-[44px] lg:text-[48px] leading-[1.12] tracking-[-0.015em] text-balance text-[#191C1A]">
             When someone asks ChatGPT for the best med spa in your city, does it know you exist?
           </h1>
-          <p className="text-[17px] leading-[1.6] text-[#3D423D] max-w-[52ch] text-pretty">
+          <p className="text-[15px] sm:text-[17px] leading-[1.6] text-[#3D423D] max-w-[52ch] text-pretty">
             AI assistants can&apos;t reliably read most med spa websites — services, prices, credentials, and booking paths are invisible to them. We make your business facts machine-readable, and prove it with before/after evidence tests.
           </p>
-          <div className="flex flex-wrap gap-4 items-center text-[13px] text-[#5A6058] font-medium pt-2">
+          <div className="flex flex-wrap gap-3 sm:gap-4 items-center text-[12.5px] sm:text-[13px] text-[#5A6058] font-medium pt-2">
             <span className="inline-flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-[#E3E6E1] shadow-xs">
               <span className="w-2 h-2 rounded-full bg-[oklch(0.48_0.10_160)]"></span>
               Flat-fee builds
@@ -215,7 +215,7 @@ export default function FunnelPage() {
         </div>
 
         {/* Right Scan Card Column */}
-        <div className="bg-white border border-[#E3E6E1] rounded-[16px] p-[28px] flex flex-col gap-4 shadow-[0_4px_24px_rgba(20,25,20,0.06),0_1px_2px_rgba(20,25,20,0.04)] relative overflow-hidden">
+        <div className="bg-white border border-[#E3E6E1] rounded-[16px] p-5 sm:p-[28px] flex flex-col gap-4 shadow-[0_4px_24px_rgba(20,25,20,0.06),0_1px_2px_rgba(20,25,20,0.04)] relative overflow-hidden">
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center">
               <div className="font-bold text-[17px] text-[#191C1A]">Free surface scan</div>
@@ -228,7 +228,7 @@ export default function FunnelPage() {
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
               value={domain}
