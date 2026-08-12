@@ -23,6 +23,9 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "AgentReady Local — AI-Readiness for Med Spas & Aesthetic Practices",
   description: "When someone asks ChatGPT for the best med spa in your city, does it know you exist? Free surface scan and 100-point Verified Audit by MetalMindTech LLC.",
+  icons: {
+    icon: "/logo.svg",
+  },
 };
 
 export default function RootLayout({

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import AgentReadyLogo from "./components/AgentReadyLogo";
 
 interface Gap {
   code: string;
@@ -158,9 +159,12 @@ export default function FunnelPage() {
 
       {/* Header */}
       <header className="max-w-[1080px] mx-auto px-8 py-[22px] flex items-center justify-between gap-6">
-        <div className="flex items-baseline gap-2.5">
-          <span className="font-serif font-semibold text-[22px] tracking-tight">AgentReady Local</span>
-          <span className="text-[11px] tracking-[0.08em] uppercase text-[#5A6058] font-mono">by MetalMindTech</span>
+        <div className="flex items-center gap-3">
+          <AgentReadyLogo className="w-8 h-8 text-[oklch(0.48_0.10_160)]" />
+          <div className="flex items-baseline gap-2.5">
+            <span className="font-serif font-semibold text-[22px] tracking-tight">AgentReady Local</span>
+            <span className="text-[11px] tracking-[0.08em] uppercase text-[#5A6058] font-mono">by MetalMindTech</span>
+          </div>
         </div>
         <nav className="flex items-center gap-[26px] text-[14px] font-medium">
           <a href="#how" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors">

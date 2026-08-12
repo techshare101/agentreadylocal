@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
+import AgentReadyLogo from "../../components/AgentReadyLogo";
 
 interface ClinicData {
   name: string;
@@ -168,8 +169,9 @@ export default function DynamicReportPage() {
         {/* Document Header */}
         <div className="flex justify-between items-start gap-6 border-b-2 border-[#191C1A] pb-[18px]">
           <div className="flex flex-col gap-1.5">
-            <div className="text-[10.5pt] tracking-[0.12em] uppercase text-[oklch(0.48_0.10_160)] font-bold font-mono">
-              Verified Audit — Client Report
+            <div className="flex items-center gap-2 text-[10.5pt] tracking-[0.12em] uppercase text-[oklch(0.48_0.10_160)] font-bold font-mono">
+              <AgentReadyLogo className="w-5 h-5 text-[oklch(0.48_0.10_160)]" />
+              <span>Verified Audit — Client Report</span>
             </div>
             <h1 className="font-serif text-[26pt] font-medium leading-tight tracking-tight text-[#191C1A]">
               {name}
