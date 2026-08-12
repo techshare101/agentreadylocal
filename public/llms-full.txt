@@ -1,0 +1,52 @@
+# AgentReady Local — Full Machine-Readable Knowledge Base & Rubric Specification
+
+MetalMindTech LLC · High-Growth Aesthetic Markets
+
+## 100-Point Scored Audit Rubric Breakdown
+
+1. Identity (15 pts):
+   - IDN-01: LocalBusiness schema present with legal name & address
+   - IDN-02: Directory NAP consistency across GBP, Yelp, & top directories
+   - IDN-03: sameAs entity links to official profiles
+
+2. Services & Pricing (15 pts):
+   - SVC-01: Service schema for each aesthetic treatment offered
+   - SVC-04: Offer price markup that AI agents can quote accurately
+   - SVC-05: Crawlable pricing page in plain text
+
+3. Trust & Credentials (15 pts):
+   - TRS-01: Review schema with source attribution
+   - TRS-03: Practitioner credentials in machine-readable text (Person schema)
+   - TRS-04: Medical director licensure text
+
+4. Machine-Readable Content (15 pts):
+   - MRC-01: FAQPage schema for common treatment queries
+   - MRC-02: Plain text policy pages (cancellation, intake, consent)
+   - MRC-03: Structured Q&A formatting for AI retrieval
+
+5. Actions & Booking (15 pts):
+   - ACT-01: Crawlable booking URL (no JS-only blocker)
+   - ACT-02: ReserveAction schema markup
+   - ACT-03: Action payload schema for agent handoff
+
+6. Crawl Policy & AI Permissions (10 pts):
+   - CRL-01: llms.txt present and valid
+   - CRL-02: AI bot allow rules in robots.txt (GPTBot, ClaudeBot, PerplexityBot)
+   - CRL-03: Clean sitemap index
+
+7. Security Classification (10 pts):
+   - SEC-01: 3-tier resource classification (Public Facts = Free, Booking = Controlled, Customer Data = Private)
+   - SEC-02: API rate limits on action endpoints
+   - SEC-03: No customer PII leakage
+
+8. Freshness Signals (5 pts):
+   - FRS-01: Page lastmod HTTP headers
+   - FRS-02: Price update date markup
+   - FRS-03: Freshness meta tags
+
+## API Endpoints
+
+### POST /api/scan
+- Content-Type: application/json
+- Payload: { "domain": "yourmedspa.com" }
+- Response: { "score": number, "gaps": Array<{ code: string, category: string, text: string }> }

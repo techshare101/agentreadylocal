@@ -1,0 +1,24 @@
+# robots.txt for AgentReady Local (MetalMindTech LLC)
+
+User-agent: *
+Allow: /
+
+# Explicit AI Crawler Permissions
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# Sitemap & LLM Machine Manifest
+Sitemap: https://agentreadylocal-pi.vercel.app/sitemap.xml
+# LLMs Text Manifest: https://agentreadylocal-pi.vercel.app/llms.txt
