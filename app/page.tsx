@@ -57,6 +57,7 @@ export default function FunnelPage() {
   const [gaps, setGaps] = useState<Gap[]>([]);
   const [scanDomain, setScanDomain] = useState("");
   const [scanTimestamp, setScanTimestamp] = useState("");
+  const [showMethodology, setShowMethodology] = useState(false);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -187,9 +188,6 @@ export default function FunnelPage() {
           <a href="#how" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors hidden sm:inline">
             How it works
           </a>
-          <a href="#rubric" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors hidden sm:inline">
-            100-point audit
-          </a>
           <a href="#pricing" className="text-[#191C1A] hover:text-[oklch(0.48_0.10_160)] transition-colors hidden sm:inline">
             Pricing
           </a>
@@ -199,7 +197,7 @@ export default function FunnelPage() {
         </nav>
       </header>
 
-      {/* Hero & Surface Scan — ORIGINAL 2-COLUMN LAYOUT */}
+      {/* Hero & Surface Scan — ORIGINAL 2-COLUMN HERO (UNTOUCHED) */}
       <section className="max-w-[1080px] mx-auto px-4 sm:px-8 pt-8 sm:pt-12 pb-[56px] grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-[40px] lg:gap-[56px] items-start">
         {/* Left Hero Column */}
         <div className="flex flex-col gap-[22px]">
@@ -352,169 +350,8 @@ export default function FunnelPage() {
         </div>
       </section>
 
-      {/* The 6 Fundamental AI Questions */}
-      <section className="bg-[#F2F4F0] border-y border-[#E3E6E1] py-14">
-        <div className="max-w-[1080px] mx-auto px-8">
-          <div className="flex flex-col gap-2 mb-8 text-center max-w-[680px] mx-auto">
-            <span className="text-[11px] uppercase tracking-widest font-mono text-[oklch(0.48_0.10_160)] font-bold">
-              The AI Patient Journey Test
-            </span>
-            <h2 className="font-serif text-[28px] md:text-[34px] font-medium text-[#191C1A] leading-tight">
-              Can AI assistants guide new patients to your practice?
-            </h2>
-            <p className="text-[14.5px] text-[#5A6058] leading-[1.6]">
-              When prospective patients search ChatGPT, Perplexity, or Google AI for aesthetic treatments, AI systems evaluate 6 fundamental questions before making a recommendation:
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
-            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
-              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">1. IDENTIFY</div>
-              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Does AI recognize your exact business entity without mismatch?</div>
-              <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Entity Match</span>
-            </div>
-
-            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
-              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">2. UNDERSTAND</div>
-              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI parse your complete service catalog in structured schema?</div>
-              <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Service Schema</span>
-            </div>
-
-            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
-              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">3. PRICE</div>
-              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI accurately quote your pricing instead of competitor data?</div>
-              <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Offer Markup</span>
-            </div>
-
-            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
-              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">4. TRUST</div>
-              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI verify practitioner licenses &amp; medical credentials?</div>
-              <span className="font-mono text-[9.5px] text-[#92400E] bg-[#FEF3C7] border border-[#FDE68A] rounded px-1.5 py-0.5 w-fit font-medium">Person Schema</span>
-            </div>
-
-            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
-              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">5. RECOMMEND</div>
-              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Does your practice surface when patients ask AI for top providers in your city?</div>
-              <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Discovery Test</span>
-            </div>
-
-            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
-              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">6. BOOK</div>
-              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI surface a crawlable direct booking path for patients?</div>
-              <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">ReserveAction</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Promise Band */}
-      <section className="bg-[#191C1A] text-[#F5F6F3]">
-        <div className="max-w-[1080px] mx-auto px-8 py-[56px] flex flex-col gap-4.5">
-          <div className="text-[12px] tracking-[0.1em] uppercase text-[oklch(0.72_0.09_160)] font-semibold font-mono">
-            Our promise — verifiable, no dead claims
-          </div>
-          <p className="font-serif text-[26px] sm:text-[28px] leading-[1.4] font-normal max-w-[60ch] text-pretty text-white">
-            &quot;Your services, prices, policies, credentials, and booking actions are presented accurately to machines — and we show you exactly what agents can and cannot understand, before and after.&quot;
-          </p>
-          <p className="text-[14px] text-[#A9AEA6] max-w-[64ch] leading-[1.6]">
-            We do not promise rankings. AI engines are third parties we don&apos;t control. We promise implementation, monitoring, testing, and remediation — every stated fact carries its source, timestamp, and verification status.
-          </p>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section id="how" className="max-w-[1080px] mx-auto px-8 pt-[72px] pb-6">
-        <h2 className="font-serif text-[32px] font-medium mb-8 tracking-tight">How it works</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-[26px] flex flex-col gap-3 shadow-2xs hover:border-[oklch(0.48_0.10_160)] transition-all group">
-            <div className="font-mono text-[12px] text-[oklch(0.48_0.10_160)] font-semibold">01 — AUDIT</div>
-            <div className="font-bold text-[17px] text-[#191C1A]">See what agents see</div>
-            <p className="text-[14px] leading-[1.6] text-[#5A6058] flex-1">
-              100-point scored rubric. Every point is a reproducible test with screenshot evidence and timestamps — including live queries to ChatGPT, Perplexity, and Google AI.
-            </p>
-            <Link href="/sample-report" className="text-[13.5px] font-semibold text-[oklch(0.48_0.10_160)] group-hover:underline flex items-center gap-1">
-              View a sample report →
-            </Link>
-          </div>
-
-          <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-[26px] flex flex-col gap-3 shadow-2xs hover:border-[oklch(0.48_0.10_160)] transition-all">
-            <div className="font-mono text-[12px] text-[oklch(0.48_0.10_160)] font-semibold">02 — INSTALL</div>
-            <div className="font-bold text-[17px]">Make your facts machine-readable</div>
-            <p className="text-[14px] leading-[1.6] text-[#5A6058]">
-              Schema graph, service catalog, pricing model, FAQ and policy normalization, llms.txt, crawl policy — built from verified records, delivered flat-fee with a before/after test suite.
-            </p>
-          </div>
-
-          <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-[26px] flex flex-col gap-3 shadow-2xs hover:border-[oklch(0.48_0.10_160)] transition-all">
-            <div className="font-mono text-[12px] text-[oklch(0.48_0.10_160)] font-semibold">03 — MONITOR</div>
-            <div className="font-bold text-[17px]">Stay accurate as engines change</div>
-            <p className="text-[14px] leading-[1.6] text-[#5A6058]">
-              Monthly citation re-tests, broken-schema alerts, and freshness checks. You get the same evidence format every month: what changed, what broke, what we fixed.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Rubric Section */}
-      <section id="rubric" className="max-w-[1080px] mx-auto px-8 pt-[32px] pb-6">
-        <div className="flex items-baseline justify-between gap-6 flex-wrap mb-4">
-          <h2 className="font-serif text-[32px] font-medium tracking-tight">The 100-point rubric</h2>
-          <div className="text-[13.5px] text-[#5A6058] font-mono">Every point = one reproducible test. Evidence stored per audit.</div>
-        </div>
-
-        {/* Differentiator Badge Banner */}
-        <div className="my-6 bg-[#F2F4F0] border border-[#E3E6E1] rounded-2xl p-6 text-center max-w-[760px] mx-auto shadow-2xs">
-          <h3 className="font-serif text-[24px] md:text-[28px] font-medium text-[#191C1A]">
-            100 points. 100% evidence-backed.
-          </h3>
-          <p className="text-[14px] text-[#5A6058] mt-1.5 font-mono leading-[1.6]">
-            Every point comes from a reproducible test — not an invented marketing score.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
-          {RUBRIC.map((cat, idx) => (
-            <div key={idx} className="bg-white border border-[#E3E6E1] rounded-[12px] p-[18px] flex flex-col gap-2 hover:border-[oklch(0.48_0.10_160)] transition-all">
-              <div className="flex items-baseline justify-between gap-2">
-                <span className="font-semibold text-[14px] text-[#191C1A]">{cat.name}</span>
-                <span className="font-mono text-[13px] text-[oklch(0.48_0.10_160)] font-semibold">{cat.pts} pts</span>
-              </div>
-              <div className="text-[12.5px] leading-[1.5] text-[#5A6058]">{cat.desc}</div>
-              <div className="mt-2 pt-2 border-t border-[#F2F4F0] flex flex-col gap-1 font-mono text-[10.5px] text-[#8A8F87]">
-                {cat.tests.map((t, tidx) => (
-                  <div key={tidx} className="truncate">• {t}</div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Security Rule Classification Strip */}
-        <div className="mt-5 bg-[#191C1A] text-white rounded-[12px] px-[22px] py-[20px] text-[13.5px] leading-[1.6] flex flex-col md:flex-row gap-4 items-start md:items-center justify-between shadow-md">
-          <div className="flex gap-3 items-baseline">
-            <span className="font-mono text-[11px] tracking-[0.06em] text-[oklch(0.72_0.09_160)] whitespace-nowrap font-bold bg-[#2C312C] px-2.5 py-1 rounded">
-              SECURITY RULE BAKED IN
-            </span>
-            <span className="text-[#F5F6F3]">
-              Every exposed resource is strictly classified across 3 tiers:
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2 font-mono text-[11px]">
-            <span className="bg-[#2C312C] text-[oklch(0.72_0.09_160)] px-2.5 py-1 rounded border border-[#3D423D]">
-              Public Facts = Free
-            </span>
-            <span className="bg-[#2C312C] text-[#B45309] px-2.5 py-1 rounded border border-[#3D423D]">
-              Booking = Controlled
-            </span>
-            <span className="bg-[#2C312C] text-[#B3261E] px-2.5 py-1 rounded border border-[#3D423D]">
-              Customer Data = Private
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Section — Single Focused Offer for Cold Traffic */}
-      <section id="pricing" className="max-w-[1080px] mx-auto px-8 pt-[56px] pb-6">
+      {/* CHANGE 2: $297 OFFER CARD MOVED UP, DIRECTLY UNDER SCANNER / GAPS */}
+      <section id="pricing" className="max-w-[1080px] mx-auto px-4 sm:px-8 pt-2 pb-12">
         <div className="flex flex-col items-center text-center gap-3 mb-8">
           <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-[oklch(0.48_0.10_160)] font-mono bg-[oklch(0.96_0.03_160)] px-3 py-1 rounded-full">
             Single Flat-Fee Engagement
@@ -572,8 +409,185 @@ export default function FunnelPage() {
         </div>
       </section>
 
+      {/* CHANGE 3: COLLAPSIBLE METHODOLOGY ACCORDION (THE 6 AI PATIENT JOURNEY TESTS + 100-POINT RUBRIC) */}
+      <section className="max-w-[1080px] mx-auto px-4 sm:px-8 pb-12">
+        <button
+          type="button"
+          onClick={() => setShowMethodology(!showMethodology)}
+          className="w-full py-4 px-5 rounded-2xl border border-[#D4D8D2] bg-white text-[14px] font-semibold text-[#191C1A] hover:bg-[#FAFAF7] transition-all flex items-center justify-between cursor-pointer font-sans shadow-2xs"
+        >
+          <span className="flex items-center gap-2.5">
+            <span className="font-mono text-[11px] text-[oklch(0.48_0.10_160)] bg-[oklch(0.96_0.03_160)] px-2.5 py-0.5 rounded font-bold uppercase">Methodology</span>
+            <span>The 6 AI Patient Journey Tests &amp; 100-Point Scored Rubric</span>
+          </span>
+          <span className="text-[oklch(0.48_0.10_160)] font-mono font-bold text-[13px]">{showMethodology ? "Hide Details ↑" : "View Details ↓"}</span>
+        </button>
+
+        {showMethodology && (
+          <div className="mt-6 flex flex-col gap-10 animate-in fade-in duration-300">
+            {/* The 6 Fundamental AI Questions */}
+            <div className="bg-[#F2F4F0] border border-[#E3E6E1] rounded-2xl p-6 sm:p-8">
+              <div className="flex flex-col gap-2 mb-6 text-center max-w-[680px] mx-auto">
+                <span className="text-[11px] uppercase tracking-widest font-mono text-[oklch(0.48_0.10_160)] font-bold">
+                  The AI Patient Journey Test
+                </span>
+                <h3 className="font-serif text-[24px] md:text-[28px] font-medium text-[#191C1A] leading-tight">
+                  Can AI assistants guide new patients to your practice?
+                </h3>
+                <p className="text-[14px] text-[#5A6058] leading-[1.6]">
+                  When prospective patients search ChatGPT, Perplexity, or Google AI for aesthetic treatments, AI systems evaluate 6 fundamental questions before making a recommendation:
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+                <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+                  <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">1. IDENTIFY</div>
+                  <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Does AI recognize your exact business entity without mismatch?</div>
+                  <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Entity Match</span>
+                </div>
+
+                <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+                  <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">2. UNDERSTAND</div>
+                  <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI parse your complete service catalog in structured schema?</div>
+                  <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Service Schema</span>
+                </div>
+
+                <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+                  <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">3. PRICE</div>
+                  <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI accurately quote your pricing instead of competitor data?</div>
+                  <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Offer Markup</span>
+                </div>
+
+                <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+                  <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">4. TRUST</div>
+                  <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI verify practitioner licenses &amp; medical credentials?</div>
+                  <span className="font-mono text-[9.5px] text-[#92400E] bg-[#FEF3C7] border border-[#FDE68A] rounded px-1.5 py-0.5 w-fit font-medium">Person Schema</span>
+                </div>
+
+                <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+                  <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">5. RECOMMEND</div>
+                  <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Does your practice surface when patients ask AI for top providers in your city?</div>
+                  <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Discovery Test</span>
+                </div>
+
+                <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+                  <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">6. BOOK</div>
+                  <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI surface a crawlable direct booking path for patients?</div>
+                  <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">ReserveAction</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Rubric Section */}
+            <div className="bg-white border border-[#E3E6E1] rounded-2xl p-6 sm:p-8 shadow-xs">
+              <div className="flex items-baseline justify-between gap-6 flex-wrap mb-4">
+                <h3 className="font-serif text-[26px] font-medium tracking-tight">The 100-point rubric</h3>
+                <div className="text-[13px] text-[#5A6058] font-mono">Every point = one reproducible test. Evidence stored per audit.</div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 mt-4">
+                {RUBRIC.map((cat, idx) => (
+                  <div key={idx} className="bg-[#FAFAF7] border border-[#EDEFEA] rounded-[12px] p-[16px] flex flex-col gap-2 hover:border-[oklch(0.48_0.10_160)] transition-all">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="font-semibold text-[13.5px] text-[#191C1A]">{cat.name}</span>
+                      <span className="font-mono text-[12.5px] text-[oklch(0.48_0.10_160)] font-semibold">{cat.pts} pts</span>
+                    </div>
+                    <div className="text-[12px] leading-[1.5] text-[#5A6058]">{cat.desc}</div>
+                    <div className="mt-2 pt-2 border-t border-[#E3E6E1] flex flex-col gap-1 font-mono text-[10px] text-[#8A8F87]">
+                      {cat.tests.map((t, tidx) => (
+                        <div key={tidx} className="truncate">• {t}</div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Security Rule Classification Strip */}
+              <div className="mt-6 bg-[#191C1A] text-white rounded-[12px] px-[20px] py-[16px] text-[13px] leading-[1.6] flex flex-col md:flex-row gap-4 items-start md:items-center justify-between shadow-md">
+                <div className="flex gap-3 items-baseline">
+                  <span className="font-mono text-[10.5px] tracking-[0.06em] text-[oklch(0.72_0.09_160)] whitespace-nowrap font-bold bg-[#2C312C] px-2.5 py-1 rounded">
+                    SECURITY RULE BAKED IN
+                  </span>
+                  <span className="text-[#F5F6F3]">
+                    Every exposed resource is strictly classified across 3 tiers:
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2 font-mono text-[10.5px]">
+                  <span className="bg-[#2C312C] text-[oklch(0.72_0.09_160)] px-2.5 py-1 rounded border border-[#3D423D]">
+                    Public Facts = Free
+                  </span>
+                  <span className="bg-[#2C312C] text-[#B45309] px-2.5 py-1 rounded border border-[#3D423D]">
+                    Booking = Controlled
+                  </span>
+                  <span className="bg-[#2C312C] text-[#B3261E] px-2.5 py-1 rounded border border-[#3D423D]">
+                    Customer Data = Private
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-6 text-center">
+                <Link
+                  href="/sample-report"
+                  className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-[oklch(0.48_0.10_160)] hover:underline font-mono"
+                >
+                  View Full 100-Point Sample Audit Report →
+                </Link>
+              </div>
+            </div>
+          </div>
+        )}
+      </section>
+
+      {/* Promise Band */}
+      <section className="bg-[#191C1A] text-[#F5F6F3]">
+        <div className="max-w-[1080px] mx-auto px-8 py-[56px] flex flex-col gap-4.5">
+          <div className="text-[12px] tracking-[0.1em] uppercase text-[oklch(0.72_0.09_160)] font-semibold font-mono">
+            Our promise — verifiable, no dead claims
+          </div>
+          <p className="font-serif text-[26px] sm:text-[28px] leading-[1.4] font-normal max-w-[60ch] text-pretty text-white">
+            &quot;Your services, prices, policies, credentials, and booking actions are presented accurately to machines — and we show you exactly what agents can and cannot understand, before and after.&quot;
+          </p>
+          <p className="text-[14px] text-[#A9AEA6] max-w-[64ch] leading-[1.6]">
+            We do not promise rankings. AI engines are third parties we don&apos;t control. We promise implementation, monitoring, testing, and remediation — every stated fact carries its source, timestamp, and verification status.
+          </p>
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section id="how" className="max-w-[1080px] mx-auto px-8 pt-[72px] pb-12">
+        <h2 className="font-serif text-[32px] font-medium mb-8 tracking-tight">How it works</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-[26px] flex flex-col gap-3 shadow-2xs hover:border-[oklch(0.48_0.10_160)] transition-all group">
+            <div className="font-mono text-[12px] text-[oklch(0.48_0.10_160)] font-semibold">01 — AUDIT</div>
+            <div className="font-bold text-[17px] text-[#191C1A]">See what agents see</div>
+            <p className="text-[14px] leading-[1.6] text-[#5A6058] flex-1">
+              100-point scored rubric. Every point is a reproducible test with screenshot evidence and timestamps — including live queries to ChatGPT, Perplexity, and Google AI.
+            </p>
+            <Link href="/sample-report" className="text-[13.5px] font-semibold text-[oklch(0.48_0.10_160)] group-hover:underline flex items-center gap-1">
+              View a sample report →
+            </Link>
+          </div>
+
+          <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-[26px] flex flex-col gap-3 shadow-2xs hover:border-[oklch(0.48_0.10_160)] transition-all">
+            <div className="font-mono text-[12px] text-[oklch(0.48_0.10_160)] font-semibold">02 — INSTALL</div>
+            <div className="font-bold text-[17px]">Make your facts machine-readable</div>
+            <p className="text-[14px] leading-[1.6] text-[#5A6058]">
+              Schema graph, service catalog, pricing model, FAQ and policy normalization, llms.txt, crawl policy — built from verified records, delivered flat-fee with a before/after test suite.
+            </p>
+          </div>
+
+          <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-[26px] flex flex-col gap-3 shadow-2xs hover:border-[oklch(0.48_0.10_160)] transition-all">
+            <div className="font-mono text-[12px] text-[oklch(0.48_0.10_160)] font-semibold">03 — MONITOR</div>
+            <div className="font-bold text-[17px]">Stay accurate as engines change</div>
+            <p className="text-[14px] leading-[1.6] text-[#5A6058]">
+              Monthly citation re-tests, broken-schema alerts, and freshness checks. You get the same evidence format every month: what changed, what broke, what we fixed.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* Live Demo Banner */}
-      <section className="max-w-[1080px] mx-auto px-8 pt-[56px] pb-20">
+      <section className="max-w-[1080px] mx-auto px-8 pt-4 pb-20">
         <div className="bg-white border border-[#E3E6E1] rounded-[16px] p-10 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center shadow-xs">
           <div className="flex flex-col gap-2.5">
             <h2 className="font-serif text-[26px] font-medium tracking-tight text-[#191C1A]">Watch it happen live</h2>
