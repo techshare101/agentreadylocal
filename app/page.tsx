@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import AgentReadyLogo from "./components/AgentReadyLogo";
+import GateForm from "./components/GateForm";
+import ScanGateForm from "./components/ScanGateForm";
 
 interface Gap {
   code: string;
@@ -51,7 +53,7 @@ const ENV_STRIPE_URL = process.env.NEXT_PUBLIC_STRIPE_CHECKOUT_URL || LIVE_STRIP
 
 export default function FunnelPage() {
   const [domain, setDomain] = useState("");
-  const [phase, setPhase] = useState<"idle" | "running" | "done">("idle");
+  const [phase, setPhase] = useState<"idle" | "running" | "gated" | "done">("idle");
   const [checkLog, setCheckLog] = useState<string[]>([]);
   const [currentCheck, setCurrentCheck] = useState("");
   const [score, setScore] = useState(0);
@@ -61,8 +63,6 @@ export default function FunnelPage() {
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [checkoutEmail, setCheckoutEmail] = useState("");
-  const [customStripeUrl, setCustomStripeUrl] = useState(ENV_STRIPE_URL);
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -70,6 +70,16 @@ export default function FunnelPage() {
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "ViewContent", {
+        content_name: "AgentReady MedSpa",
+        value: 297,
+        currency: "USD",
+      });
+    }
   }, []);
 
   const stringHash = (s: string) => {
@@ -87,6 +97,13 @@ export default function FunnelPage() {
     setCurrentCheck(CHECKS[0]);
     setScanDomain(d);
     setScanTimestamp(new Date().toISOString().replace(/\.\d{3}Z$/, "Z"));
+
+    // Fire ScanStarted Meta Pixel custom event
+    if (typeof window !== "undefined" && window.fbq) {
+      try {
+        window.fbq("trackCustom", "ScanStarted", { domain: d });
+      } catch (e) {}
+    }
 
     let i = 0;
     const step = () => {
@@ -114,7 +131,14 @@ export default function FunnelPage() {
         }
         setScore(calculatedScore);
         setGaps(foundGaps);
-        setPhase("done");
+        setPhase("gated");
+
+        // Fire ScanCompleted Meta Pixel custom event
+        if (typeof window !== "undefined" && window.fbq) {
+          try {
+            window.fbq("trackCustom", "ScanCompleted", { domain: d, score: calculatedScore });
+          } catch (e) {}
+        }
       }
     };
 
@@ -127,18 +151,9 @@ export default function FunnelPage() {
   };
 
   const handleCheckoutClick = (e: React.MouseEvent) => {
-    const url = customStripeUrl || ENV_STRIPE_URL;
-    if (url && url.startsWith("https://buy.stripe.com/") && !url.includes("test_00g123456789")) {
-      // Valid Stripe URL present -> open in new tab
-      return;
-    }
-    // Otherwise open modal gracefully
     e.preventDefault();
     setIsModalOpen(true);
   };
-
-  const activeStripeUrl = (customStripeUrl || ENV_STRIPE_URL).trim();
-  const isValidStripeUrl = activeStripeUrl.startsWith("https://buy.stripe.com/") && !activeStripeUrl.includes("test_00g123456789");
 
   return (
     <div id="top" className="min-h-screen bg-[#FAFAF7] text-[#191C1A] font-sans antialiased selection:bg-[oklch(0.90_0.05_160)]">
@@ -265,6 +280,25 @@ export default function FunnelPage() {
             </div>
           )}
 
+          {/* Gated Email Capture State (Score Ungated, Gaps Gated) */}
+          {phase === "gated" && (
+            <div className="flex flex-col gap-4 animate-in fade-in duration-300">
+              {/* Ungated Score Card */}
+              <div className="flex items-center gap-4 bg-[#F2F4F0] rounded-[12px] p-4 border border-[#E3E6E1]">
+                <div className="flex flex-col items-center justify-center min-w-[76px] py-1 bg-white rounded-lg border border-[#E3E6E1] shadow-2xs">
+                  <div className="font-serif text-[36px] font-semibold text-[#B3261E] leading-none">{score}</div>
+                  <div className="text-[10px] tracking-[0.06em] uppercase text-[#5A6058] font-mono mt-0.5">of 100</div>
+                </div>
+                <div className="text-[13.5px] leading-[1.5] text-[#3D423D]">
+                  <strong className="text-[#191C1A]">{scanDomain}</strong> scored <strong className="text-[#B3261E]">{score}/100</strong>. Surface scan found {gaps.length} critical gaps in schema, booking path &amp; pricing visibility.
+                </div>
+              </div>
+
+              {/* Gate Form to reveal the 3 critical gaps */}
+              <ScanGateForm scanDomain={scanDomain} scanScore={score} onUnlock={() => setPhase("done")} />
+            </div>
+          )}
+
           {/* Done State */}
           {phase === "done" && (
             <div className="flex flex-col gap-4 animate-in fade-in duration-300">
@@ -302,15 +336,13 @@ export default function FunnelPage() {
               </div>
 
               {/* CTA Button */}
-              <a
-                href={isValidStripeUrl ? activeStripeUrl : "#"}
+              <button
+                type="button"
                 onClick={handleCheckoutClick}
-                target={isValidStripeUrl ? "_blank" : "_self"}
-                rel="noopener noreferrer"
-                className="block text-center p-3.5 rounded-lg bg-[#191C1A] text-white text-[14px] font-semibold hover:bg-black transition-all shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer"
+                className="w-full text-center p-3.5 rounded-lg bg-[#191C1A] text-white text-[14px] font-semibold hover:bg-black transition-all shadow-md hover:shadow-lg active:scale-[0.99] cursor-pointer"
               >
                 Get the full 100-point Verified Audit — $297
-              </a>
+              </button>
               <div className="text-[11.5px] text-[#8A8F87] text-center font-mono">
                 The full audit re-runs every check with screenshots, timestamps &amp; raw payloads.
               </div>
@@ -320,9 +352,64 @@ export default function FunnelPage() {
           {/* Idle State */}
           {phase === "idle" && (
             <div className="text-[12.5px] text-[#8A8F87] leading-[1.5] bg-[#FAFAF7] p-3.5 rounded-xl border border-[#EDEFEA]">
-              Checks schema markup, service catalog, pricing visibility, credentials, booking path, and crawl policy. No signup required.
+              Checks schema markup, service catalog, pricing visibility, credentials, booking path, and crawl policy in 30 seconds.
             </div>
           )}
+        </div>
+      </section>
+
+      {/* The 6 Fundamental AI Questions */}
+      <section className="bg-[#F2F4F0] border-y border-[#E3E6E1] py-14">
+        <div className="max-w-[1080px] mx-auto px-8">
+          <div className="flex flex-col gap-2 mb-8 text-center max-w-[680px] mx-auto">
+            <span className="text-[11px] uppercase tracking-widest font-mono text-[oklch(0.48_0.10_160)] font-bold">
+              The AI Patient Journey Test
+            </span>
+            <h2 className="font-serif text-[28px] md:text-[34px] font-medium text-[#191C1A] leading-tight">
+              Can AI assistants guide new patients to your practice?
+            </h2>
+            <p className="text-[14.5px] text-[#5A6058] leading-[1.6]">
+              When prospective patients search ChatGPT, Perplexity, or Google AI for aesthetic treatments, AI systems evaluate 6 fundamental questions before making a recommendation:
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">1. IDENTIFY</div>
+              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Does AI recognize your exact business entity without mismatch?</div>
+              <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Entity Match</span>
+            </div>
+
+            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">2. UNDERSTAND</div>
+              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI parse your complete service catalog in structured schema?</div>
+              <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Service Schema</span>
+            </div>
+
+            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">3. PRICE</div>
+              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI accurately quote your pricing instead of competitor data?</div>
+              <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Offer Markup</span>
+            </div>
+
+            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">4. TRUST</div>
+              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI verify practitioner licenses &amp; medical credentials?</div>
+              <span className="font-mono text-[9.5px] text-[#92400E] bg-[#FEF3C7] border border-[#FDE68A] rounded px-1.5 py-0.5 w-fit font-medium">Person Schema</span>
+            </div>
+
+            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">5. RECOMMEND</div>
+              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Does your practice surface when patients ask AI for top providers in your city?</div>
+              <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">Discovery Test</span>
+            </div>
+
+            <div className="bg-white border border-[#E3E6E1] rounded-xl p-3.5 flex flex-col justify-between gap-2.5 shadow-2xs">
+              <div className="font-mono text-[9.5px] font-bold text-[#5A6058] uppercase">6. BOOK</div>
+              <div className="text-[12.5px] font-medium text-[#191C1A] leading-snug">Can AI surface a crawlable direct booking path for patients?</div>
+              <span className="font-mono text-[9.5px] text-[#B3261E] bg-[#FEF2F2] border border-[#FCA5A5] rounded px-1.5 py-0.5 w-fit font-medium">ReserveAction</span>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -411,9 +498,19 @@ export default function FunnelPage() {
 
       {/* Rubric Section */}
       <section id="rubric" className="max-w-[1080px] mx-auto px-8 pt-[32px] pb-6">
-        <div className="flex items-baseline justify-between gap-6 flex-wrap mb-7">
+        <div className="flex items-baseline justify-between gap-6 flex-wrap mb-4">
           <h2 className="font-serif text-[32px] font-medium tracking-tight">The 100-point rubric</h2>
           <div className="text-[13.5px] text-[#5A6058] font-mono">Every point = one reproducible test. Evidence stored per audit.</div>
+        </div>
+
+        {/* Differentiator Badge Banner */}
+        <div className="my-6 bg-[#F2F4F0] border border-[#E3E6E1] rounded-2xl p-6 text-center max-w-[760px] mx-auto shadow-2xs">
+          <h3 className="font-serif text-[24px] md:text-[28px] font-medium text-[#191C1A]">
+            100 points. 100% evidence-backed.
+          </h3>
+          <p className="text-[14px] text-[#5A6058] mt-1.5 font-mono leading-[1.6]">
+            Every point comes from a reproducible test — not an invented marketing score.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
@@ -457,69 +554,62 @@ export default function FunnelPage() {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Pricing Section — Single Focused Offer for Cold Traffic */}
       <section id="pricing" className="max-w-[1080px] mx-auto px-8 pt-[56px] pb-6">
-        <h2 className="font-serif text-[32px] font-medium mb-8 tracking-tight">Pricing</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch">
-          {/* Surface Scan Card */}
-          <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-6 flex flex-col gap-2.5 shadow-2xs">
-            <div className="text-[12px] font-semibold tracking-[0.05em] uppercase text-[#5A6058] font-mono">Surface scan</div>
-            <div className="font-serif text-[32px] font-semibold text-[#191C1A]">Free</div>
-            <div className="text-[13.5px] leading-[1.55] text-[#5A6058] flex-1">
-              Instant score plus your three most critical gaps. No signup required.
-            </div>
-            <a href="#top" onClick={scrollToTop} className="text-[13.5px] font-semibold text-[oklch(0.48_0.10_160)] hover:underline">
-              Run it above ↑
-            </a>
+        <div className="flex flex-col items-center text-center gap-3 mb-8">
+          <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-[oklch(0.48_0.10_160)] font-mono bg-[oklch(0.96_0.03_160)] px-3 py-1 rounded-full">
+            Single Flat-Fee Engagement
+          </div>
+          <h2 className="font-serif text-[34px] sm:text-[40px] font-medium tracking-tight text-[#191C1A]">
+            Get Your 100-Point Verified Audit
+          </h2>
+          <p className="text-[15px] text-[#5A6058] max-w-[54ch]">
+            Every gap tested with screenshots, timestamps, raw JSON-LD payloads, and a 5-step fix plan. One flat fee, zero recurring commitment.
+          </p>
+        </div>
+
+        <div className="max-w-[560px] mx-auto bg-white border-2 border-[oklch(0.48_0.10_160)] rounded-[20px] p-6 sm:p-8 flex flex-col gap-5 relative shadow-xl">
+          <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[oklch(0.48_0.10_160)] text-white text-[11px] font-bold tracking-[0.08em] uppercase rounded-full px-4 py-1 font-mono shadow-xs">
+            Most Popular Next Step
           </div>
 
-          {/* Verified Audit Card (Featured) */}
-          <div className="bg-white border-2 border-[oklch(0.48_0.10_160)] rounded-[14px] p-6 flex flex-col gap-2.5 relative shadow-md">
-            <div className="absolute -top-3 left-[20px] bg-[oklch(0.48_0.10_160)] text-white text-[10.5px] font-bold tracking-[0.06em] uppercase rounded-full px-3 py-0.5 font-mono">
-              Start here
+          <div className="flex justify-between items-baseline border-b border-[#EDEFEA] pb-4">
+            <div>
+              <div className="text-[13px] font-semibold tracking-[0.05em] uppercase text-[#5A6058] font-mono">Verified Audit</div>
+              <div className="text-[12.5px] text-[#8A8F87]">Single Location Practice</div>
             </div>
-            <div className="text-[12px] font-semibold tracking-[0.05em] uppercase text-[#5A6058] font-mono">Verified Audit</div>
-            <div className="flex items-baseline gap-2">
-              <span className="font-serif text-[32px] font-semibold text-[#191C1A]">$297</span>
-              <span className="text-[12px] text-[#8A8F87] font-mono">$750 multi-loc</span>
-            </div>
-            <div className="text-[13.5px] leading-[1.55] text-[#5A6058] flex-1">
-              100-point scored report with live AI-engine test screenshots, timestamps, and prioritized gap list.
-            </div>
-            <a
-              href={isValidStripeUrl ? activeStripeUrl : "#"}
-              onClick={handleCheckoutClick}
-              target={isValidStripeUrl ? "_blank" : "_self"}
-              rel="noopener noreferrer"
-              className="block text-center py-2.5 px-3 rounded-lg bg-[oklch(0.48_0.10_160)] text-white text-[14px] font-semibold hover:bg-[oklch(0.42_0.10_160)] transition-colors shadow-xs cursor-pointer"
-            >
-              Order $297 Audit
-            </a>
-          </div>
-
-          {/* Install Card */}
-          <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-6 flex flex-col gap-2.5 shadow-2xs">
-            <div className="text-[12px] font-semibold tracking-[0.05em] uppercase text-[#5A6058] font-mono">Install</div>
-            <div className="flex items-baseline gap-1.5 flex-wrap">
-              <span className="font-serif text-[32px] font-semibold text-[#191C1A]">$1,500</span>
-              <span className="text-[11.5px] text-[#8A8F87] font-mono">Starter · $3,500 Pro</span>
-            </div>
-            <div className="text-[13.5px] leading-[1.55] text-[#5A6058] flex-1">
-              Schema graph, service catalog, pricing model, FAQ/policy normalization, llms.txt, crawl policy, before/after test suite. Flat fee.
-            </div>
-          </div>
-
-          {/* Monitor Card */}
-          <div className="bg-white border border-[#E3E6E1] rounded-[14px] p-6 flex flex-col gap-2.5 shadow-2xs">
-            <div className="text-[12px] font-semibold tracking-[0.05em] uppercase text-[#5A6058] font-mono">Monitor</div>
             <div className="flex items-baseline gap-1.5">
-              <span className="font-serif text-[32px] font-semibold text-[#191C1A]">$249</span>
-              <span className="text-[12px] text-[#8A8F87] font-mono">–$499 / mo</span>
-            </div>
-            <div className="text-[13.5px] leading-[1.55] text-[#5A6058] flex-1">
-              Monthly citation re-tests, broken-schema alerts, freshness checks — same evidence format, every month.
+              <span className="font-serif text-[42px] font-bold text-[#191C1A]">$297</span>
+              <span className="text-[12px] text-[#8A8F87] font-mono">one-time</span>
             </div>
           </div>
+
+          <div className="flex flex-col gap-2.5 font-mono text-[12.5px] text-[#3D423D]">
+            <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">
+              <span>✓</span> <span>100-point reproducible score rubric</span>
+            </div>
+            <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">
+              <span>✓</span> <span>Live ChatGPT, Perplexity &amp; Google AI evidence screenshots</span>
+            </div>
+            <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">
+              <span>✓</span> <span>Prioritized gap report + 5-step implementation roadmap</span>
+            </div>
+            <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">
+              <span>✓</span> <span>Evidence zip bundle with raw payloads and audit logs</span>
+            </div>
+          </div>
+
+          <GateForm buttonText="Get instant access — $297" />
+
+          <div className="text-[11.5px] text-[#8A8F87] text-center font-mono pt-1">
+            🔒 100% Secure Payment via Stripe · Delivered within 24 hours
+          </div>
+        </div>
+
+        {/* Secondary Enterprise Footnote */}
+        <div className="mt-8 text-center text-[12.5px] text-[#8A8F87] font-mono max-w-[640px] mx-auto bg-[#FAFAF7] p-4 rounded-xl border border-[#EDEFEA]">
+          Need full schema graph implementation or multi-location monitoring? <br />
+          <span className="text-[#3D423D] font-medium">Starter Install ($1,500)</span> and <span className="text-[#3D423D] font-medium">Monthly Monitoring ($249/mo)</span> options are detailed directly in your Audit report.
         </div>
       </section>
 
@@ -581,61 +671,10 @@ export default function FunnelPage() {
               <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">✓ Evidence zip bundle with screenshots &amp; payloads</div>
             </div>
 
-            <div className="flex flex-col gap-3">
-              <label className="text-[13px] font-semibold text-[#191C1A] flex flex-col gap-1">
-                Contact Email for Report Delivery:
-                <input
-                  type="email"
-                  value={checkoutEmail}
-                  onChange={(e) => setCheckoutEmail(e.target.value)}
-                  placeholder="owner@yourmedspa.com"
-                  className="px-3.5 py-2.5 border border-[#D4D8D2] rounded-lg font-mono text-[14px] bg-[#FAFAF7] outline-none focus:border-[oklch(0.48_0.10_160)] text-[#191C1A]"
-                />
-              </label>
-
-              <label className="text-[12px] text-[#5A6058] flex flex-col gap-1 font-mono">
-                Stripe Payment Link URL:
-                <input
-                  type="url"
-                  value={customStripeUrl}
-                  onChange={(e) => setCustomStripeUrl(e.target.value)}
-                  placeholder="https://buy.stripe.com/your_live_link"
-                  className="px-3 py-2 border border-[#D4D8D2] rounded-lg font-mono text-[12px] bg-[#FAFAF7] outline-none focus:border-[oklch(0.48_0.10_160)] text-[#191C1A]"
-                />
-                <span className="text-[10.5px] text-[#8A8F87]">
-                  Tip: Set <code className="bg-[#F2F4F0] px-1 py-0.5 rounded text-[#191C1A]">NEXT_PUBLIC_STRIPE_CHECKOUT_URL</code> in <code className="bg-[#F2F4F0] px-1 py-0.5 rounded text-[#191C1A]">.env.local</code> for automatic redirection.
-                </span>
-              </label>
-            </div>
-
-            {isValidStripeUrl ? (
-              <a
-                href={activeStripeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block text-center p-3.5 rounded-lg bg-[oklch(0.48_0.10_160)] text-white text-[14px] font-semibold hover:bg-[oklch(0.42_0.10_160)] transition-colors shadow-md text-center"
-              >
-                Proceed to Stripe Checkout ($297) →
-              </a>
-            ) : (
-              <div className="flex flex-col gap-2">
-                <button
-                  onClick={() => {
-                    if (!customStripeUrl || !customStripeUrl.startsWith("https://buy.stripe.com/")) {
-                      alert("Please enter your live Stripe Payment Link (e.g. https://buy.stripe.com/...) above or in .env.local to open checkout!");
-                      return;
-                    }
-                    window.open(customStripeUrl, "_blank");
-                  }}
-                  className="w-full py-3.5 px-4 rounded-lg bg-[oklch(0.48_0.10_160)] text-white text-[14px] font-semibold hover:bg-[oklch(0.42_0.10_160)] transition-colors shadow-md text-center cursor-pointer"
-                >
-                  Pay $297 via Stripe →
-                </button>
-                <div className="text-[11px] text-[#8A8F87] text-center font-mono">
-                  100% Secure SSL Payment via Stripe
-                </div>
-              </div>
-            )}
+            <GateForm
+              buttonText="Get instant access — $297"
+              onSuccess={() => setIsModalOpen(false)}
+            />
           </div>
         </div>
       )}

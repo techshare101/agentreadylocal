@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Spectral, Public_Sans, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
+import MetaPixel from "./components/MetaPixel";
+import FunnelTracker from "./components/FunnelTracker";
 
 const spectral = Spectral({
   weight: ["400", "500", "600"],
@@ -56,7 +58,7 @@ const jsonLdSchema = {
           "name": "Verified Audit",
           "price": "297",
           "priceCurrency": "USD",
-          "url": "https://buy.stripe.com/7sY7sL9gL6gQ3Ft6qt3840n"
+          "url": "https://agentreadylocal-pi.vercel.app/#pricing"
         },
         {
           "@type": "Offer",
@@ -99,9 +101,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen bg-[#FAFAF7] text-[#191C1A] font-sans antialiased">
+        <MetaPixel />
+        <FunnelTracker />
         {children}
       </body>
     </html>
   );
 }
+
 

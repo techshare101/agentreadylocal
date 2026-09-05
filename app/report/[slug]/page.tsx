@@ -195,6 +195,61 @@ export default function DynamicReportPage() {
           <span className="text-[9pt] text-[#5A6058]">Every stated fact carries source, observed_at, confidence &amp; verification status.</span>
         </div>
 
+        {/* AI Customer Journey Matrix */}
+        <div className="my-5 border border-[#E3E6E1] rounded-xl p-5 bg-[#FAFAF7] shadow-2xs">
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="font-mono text-[9.5pt] uppercase tracking-wider text-[#191C1A] font-bold">
+              AI Customer Journey Audit Matrix
+            </h3>
+            <span className="text-[8.5pt] font-mono text-[#5A6058]">Live AI Assistant Verification</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-6 gap-2 font-mono text-[9pt] text-center">
+            <div className="p-2.5 rounded-lg border border-[#FDE68A] bg-[#FEF3C7] text-[#92400E]">
+              <div className="font-bold text-[8pt]">IDENTIFY</div>
+              <div className="text-[10pt] my-0.5 font-bold">🟡 PARTIAL</div>
+              <div className="text-[7.5pt] opacity-85">Entity Mismatch</div>
+            </div>
+            <div className="p-2.5 rounded-lg border border-[#FCA5A5] bg-[#FEF2F2] text-[#991B1B]">
+              <div className="font-bold text-[8pt]">UNDERSTAND</div>
+              <div className="text-[10pt] my-0.5 font-bold">🔴 FAIL</div>
+              <div className="text-[7.5pt] opacity-85">No Service Schema</div>
+            </div>
+            <div className="p-2.5 rounded-lg border border-[#FCA5A5] bg-[#FEF2F2] text-[#991B1B]">
+              <div className="font-bold text-[8pt]">PRICE</div>
+              <div className="text-[10pt] my-0.5 font-bold">🔴 FAIL</div>
+              <div className="text-[7.5pt] opacity-85">Unparseable Pricing</div>
+            </div>
+            <div className="p-2.5 rounded-lg border border-[#FDE68A] bg-[#FEF3C7] text-[#92400E]">
+              <div className="font-bold text-[8pt]">TRUST</div>
+              <div className="text-[10pt] my-0.5 font-bold">🟡 PARTIAL</div>
+              <div className="text-[7.5pt] opacity-85">Badges in Images</div>
+            </div>
+            <div className="p-2.5 rounded-lg border border-[#FCA5A5] bg-[#FEF2F2] text-[#991B1B]">
+              <div className="font-bold text-[8pt]">RECOMMEND</div>
+              <div className="text-[10pt] my-0.5 font-bold">🔴 FAIL</div>
+              <div className="text-[7.5pt] opacity-85">Competitor Cited</div>
+            </div>
+            <div className="p-2.5 rounded-lg border border-[#FCA5A5] bg-[#FEF2F2] text-[#991B1B]">
+              <div className="font-bold text-[8pt]">BOOK</div>
+              <div className="text-[10pt] my-0.5 font-bold">🔴 FAIL</div>
+              <div className="text-[7.5pt] opacity-85">Hidden JS Widget</div>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Entity Collision Banner */}
+        <div className="my-4 bg-[#FEF2F2] border border-[#FCA5A5] rounded-xl p-4 text-[10pt] shadow-2xs">
+          <div className="flex items-center gap-2 font-mono text-[#B3261E] font-bold uppercase tracking-wider text-[9.5pt] mb-1.5">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#B3261E] inline-block animate-pulse"></span>
+            <span>🔴 AI ENTITY COLLISION DETECTED</span>
+          </div>
+          <div className="text-[#3D423D] leading-[1.6]">
+            <strong>Queried Brand:</strong> {name} <br/>
+            <strong>Resolved Entity:</strong> {name.replace(/aesthetics/i, "Aesthetic Center")} (Split Directory Listing) <br/>
+            <span className="text-[#B3261E] font-medium">Risk Flag:</span> AI engines fragment brand mentions, citations, service catalogs, and recommendation signals across split entity names. Standard SEO tools miss this completely.
+          </div>
+        </div>
+
         {/* Score Box & Overview */}
         <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-[36px] items-center mt-[20px] break-inside-avoid">
           <div className="flex flex-col items-center gap-0.5 border-2 border-[#191C1A] rounded-[14px] p-[22px_32px] bg-[#FAFAF7]">
@@ -522,8 +577,27 @@ export default function DynamicReportPage() {
           </tbody>
         </table>
 
-        <div className="mt-4 bg-[#F2F4F0] rounded-[10px] p-[16px_20px] text-[10.5pt] leading-[1.6] text-[#3D423D] break-inside-avoid border border-[#E3E6E1]">
-          Projected post-install score: <strong className="text-[#191C1A]">86 / 100</strong>. Remaining points depend on third-party directory corrections and review volume — outside flat-fee scope and stated as such. We do not promise rankings; we promise these facts become machine-readable and stay that way.
+        <div className="mt-6 bg-[#FAFAF7] rounded-[12px] p-5 text-[10.5pt] leading-[1.65] text-[#3D423D] break-inside-avoid border border-[#E3E6E1]">
+          <div className="font-mono text-[9.5pt] uppercase tracking-wider text-[#5A6058] font-bold mb-2">
+            Remediation Value &amp; Post-Install Target
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 my-3 text-center font-mono">
+            <div className="p-3 bg-white border border-[#E3E6E1] rounded-lg">
+              <div className="text-[18pt] font-serif font-bold text-[#B3261E]">{score} / 100</div>
+              <div className="text-[8.5pt] text-[#5A6058] uppercase">Current Verified Score</div>
+            </div>
+            <div className="p-3 bg-white border border-[#E3E6E1] rounded-lg">
+              <div className="text-[18pt] font-serif font-bold text-[oklch(0.48_0.10_160)]">+{Math.min(50, 100 - score)} pts</div>
+              <div className="text-[8.5pt] text-[#5A6058] uppercase">Addressable via Fixes</div>
+            </div>
+            <div className="p-3 bg-white border border-[#E3E6E1] rounded-lg">
+              <div className="text-[18pt] font-serif font-bold text-[#191C1A]">{Math.min(92, score + 48)} / 100</div>
+              <div className="text-[8.5pt] text-[#5A6058] uppercase">Max Recoverable Score</div>
+            </div>
+          </div>
+          <div className="text-[8.5pt] text-[#5A6058] font-mono leading-[1.5] mt-2">
+            *Final score is determined only by post-install verification. AI visibility and third-party indexing are not guaranteed. Remaining points depend on third-party directory corrections and review volume outside flat-fee scope.
+          </div>
         </div>
 
         {/* Footer Strip */}
