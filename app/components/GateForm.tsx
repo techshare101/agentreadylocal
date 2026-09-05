@@ -41,6 +41,11 @@ export default function GateForm({
     e.preventDefault();
     const cleanEmail = email.trim();
 
+    if (!cleanEmail) {
+      setError("Please enter your work email.");
+      return;
+    }
+
     if (!EMAIL_REGEX.test(cleanEmail)) {
       setError("That address is missing an @ or a domain.");
       return;
@@ -128,7 +133,10 @@ export default function GateForm({
           placeholder="you@yourmedspa.com"
           required
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (error) setError("");
+          }}
           disabled={loading}
           style={{ fontSize: "16px" }} // Mobile-first sizing: strictly >= 16px to prevent iOS Safari auto-zoom
           className="w-full px-4 py-3 rounded-lg border border-[#D4D8D2] bg-white font-sans text-[16px] text-[#191C1A] outline-none focus:border-[oklch(0.48_0.10_160)] focus:ring-2 focus:ring-[oklch(0.48_0.10_160)]/20 transition-all placeholder:text-[#8A8F87]"
