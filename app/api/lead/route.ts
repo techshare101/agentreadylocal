@@ -32,10 +32,10 @@ export async function POST(req: Request) {
       try {
         const db = createClient(supabaseUrl, supabaseServiceKey);
 
-        // Stage Non-Regression: Preserve checkout_started if lead scans again later
+        // Stage & Data Non-Regression: Preserve existing scanned_domain, scan_score, source, and checkout_started
         const { data: existing, error: selectError } = await db
           .from('leads')
-          .select('stage')
+          .select('stage, scanned_domain, scan_score, source')
           .eq('email', cleanEmail)
           .eq('product', leadProduct)
           .maybeSingle();
@@ -48,17 +48,21 @@ export async function POST(req: Request) {
           finalStage = 'checkout_started';
         }
 
+        const finalDomain = scanned_domain || existing?.scanned_domain || null;
+        const finalScore = typeof scan_score === 'number' ? scan_score : (typeof existing?.scan_score === 'number' ? existing.scan_score : null);
+        const finalSource = scanOnly ? 'meta_ad_scan' : (existing?.source || 'meta_ad_checkout');
+
         const { error: upsertError } = await db.from('leads').upsert(
           {
             email: cleanEmail,
             product: leadProduct,
             stage: finalStage,
-            scanned_domain: scanned_domain || null,
-            scan_score: typeof scan_score === 'number' ? scan_score : null,
+            scanned_domain: finalDomain,
+            scan_score: finalScore,
             fbclid: fbclid || null,
             utm_campaign: utm_campaign || null,
             utm_content: utm_content || null,
-            source: scanOnly ? 'meta_ad_scan' : 'meta_ad_checkout',
+            source: finalSource,
           },
           { onConflict: 'email,product' }
         );

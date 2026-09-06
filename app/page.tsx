@@ -395,7 +395,11 @@ export default function FunnelPage() {
             </div>
           </div>
 
-          <GateForm buttonText="Get instant access — $297" />
+          <GateForm
+            buttonText="Get instant access — $297"
+            scannedDomain={scanDomain}
+            scanScore={score}
+          />
 
           <div className="text-[11.5px] text-[#8A8F87] text-center font-mono pt-1">
             🔒 100% Secure Payment via Stripe · Delivered within 24 hours

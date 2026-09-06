@@ -74,12 +74,13 @@ export default function ScanGateForm({ scanDomain, scanScore, onUnlock }: ScanGa
 
     try {
       // Save lead in Supabase via API route
-      await fetch("/api/lead", {
+      const res = await fetch("/api/lead", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: cleanEmail,
           eventId,
+          product: "agentready",
           fbclid: queryParams.fbclid,
           utm_campaign: queryParams.utm_campaign,
           utm_content: queryParams.utm_content,
@@ -88,11 +89,17 @@ export default function ScanGateForm({ scanDomain, scanScore, onUnlock }: ScanGa
           stage: "scanned",
           scanOnly: true, // Lead captured via scan unlock
         }),
-      }).catch(() => {});
+      });
+
+      const resData = await res.json().catch(() => ({}));
+      if (!res.ok || !resData.leadCaptured) {
+        console.error("[CRITICAL] Scan gate lead capture failed:", resData);
+      }
 
       setLoading(false);
       onUnlock();
     } catch (err: any) {
+      console.error("[CRITICAL] Scan gate network exception:", err);
       setLoading(false);
       // Unlock anyway so user experience is smooth even if network fails
       onUnlock();

@@ -7,12 +7,16 @@ const EMAIL_REGEX = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 interface GateFormProps {
   buttonText?: string;
   className?: string;
+  scannedDomain?: string;
+  scanScore?: number;
   onSuccess?: () => void;
 }
 
 export default function GateForm({
   buttonText = "Run My Verified Audit — $297",
   className = "",
+  scannedDomain,
+  scanScore,
   onSuccess,
 }: GateFormProps) {
   const [email, setEmail] = useState("");
@@ -84,6 +88,10 @@ export default function GateForm({
         body: JSON.stringify({
           email: cleanEmail,
           eventId,
+          product: "agentready",
+          scanned_domain: scannedDomain,
+          scan_score: scanScore,
+          stage: "checkout_started",
           fbclid: queryParams.fbclid,
           utm_campaign: queryParams.utm_campaign,
           utm_content: queryParams.utm_content,
