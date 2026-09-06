@@ -22,6 +22,8 @@ export async function POST(req: Request) {
     const currentStage = stage || (scanOnly ? 'scanned' : 'checkout_started');
     let finalStage = currentStage;
 
+    let leadCaptured = false;
+
     // 1. Capture lead in Supabase BEFORE Stripe checkout session creation
     const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -63,16 +65,18 @@ export async function POST(req: Request) {
 
         if (upsertError) {
           console.error('[CRITICAL] LEAD_CAPTURE_FAILED:', { email: cleanEmail, error: upsertError.message, details: upsertError });
-          // Never block visitor or checkout flow — log error loudly for monitoring
+        } else {
+          leadCaptured = true;
         }
-      } catch (dbErr) {
-        console.error('[CRITICAL] LEAD_CAPTURE_EXCEPTION:', dbErr);
-        // Continue so lead experience is not broken
+      } catch (dbErr: any) {
+        console.error('[CRITICAL] LEAD_CAPTURE_EXCEPTION:', { email: cleanEmail, error: dbErr?.message || dbErr });
       }
+    } else {
+      console.error('[CRITICAL] LEAD_CAPTURE_SKIPPED: Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
     }
 
     if (scanOnly) {
-      return NextResponse.json({ success: true, leadCaptured: true });
+      return NextResponse.json({ success: leadCaptured, leadCaptured });
     }
 
     // 2. Create Stripe Checkout Session

@@ -68,15 +68,9 @@ export default function GateForm({
 
         window.fbq(
           "track",
-          "Lead",
-          { content_name: "AgentReady MedSpa", value: 297, currency: "USD" },
-          pixelOptions
-        );
-        window.fbq(
-          "track",
           "InitiateCheckout",
           { content_name: "AgentReady MedSpa", value: 297, currency: "USD" },
-          testCode ? { test_event_code: testCode } : undefined
+          pixelOptions
         );
       } catch (pxErr) {
         console.error("Meta Pixel tracking error:", pxErr);
