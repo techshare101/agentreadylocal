@@ -3,7 +3,8 @@
 import { useEffect } from "react";
 import Script from "next/script";
 
-const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+const RAW_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+const PIXEL_ID = (RAW_PIXEL_ID || "").replace(/[^0-9]/g, "");
 
 declare global {
   interface Window {
