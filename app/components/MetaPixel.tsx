@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import Script from "next/script";
 
-const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || "1016599187317711"; // Default active pixel ID
+const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 declare global {
   interface Window {
@@ -14,6 +14,10 @@ declare global {
 
 export default function MetaPixel() {
   useEffect(() => {
+    if (!PIXEL_ID) {
+      console.error("[CRITICAL] NEXT_PUBLIC_META_PIXEL_ID environment variable is missing!");
+      return;
+    }
     if (typeof window !== "undefined") {
       const urlParams = new URLSearchParams(window.location.search);
       const testCode = urlParams.get("test_event_code") || process.env.NEXT_PUBLIC_META_TEST_EVENT_CODE;
@@ -22,6 +26,10 @@ export default function MetaPixel() {
       }
     }
   }, []);
+
+  if (!PIXEL_ID) {
+    return null;
+  }
 
   return (
     <>
