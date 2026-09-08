@@ -208,7 +208,7 @@ export default function FunnelPage() {
             When someone asks ChatGPT for the best med spa in your city, does it know you exist?
           </h1>
           <p className="text-[15px] sm:text-[17px] leading-[1.6] text-[#3D423D] max-w-[52ch] text-pretty">
-            AI assistants can&apos;t reliably read most med spa websites — services, prices, credentials, and booking paths are invisible to them. We make your business facts machine-readable, and prove it with before/after evidence tests.
+            Your future patient may never visit Google or your website. Their AI assistant may choose who gets considered, compared and booked. We test whether your clinic survives that decision.
           </p>
           <div className="flex flex-wrap gap-3 sm:gap-4 items-center text-[12.5px] sm:text-[13px] text-[#5A6058] font-medium pt-2">
             <span className="inline-flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-[#E3E6E1] shadow-xs">
