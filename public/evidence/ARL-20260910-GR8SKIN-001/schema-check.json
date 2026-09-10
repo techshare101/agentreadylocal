@@ -1,0 +1,74 @@
+{
+  "check": "local_public_markup_inventory_v1",
+  "scope": "Fetched HTML for the three listed URLs; not a full-site crawl.",
+  "semantic_validation": "not_run",
+  "limitation": "Does not certify Schema.org validity, Google eligibility, engine ingestion, or ranking. Zero JSON-LD blocks is not a validation pass.",
+  "pages": [
+    {
+      "source_url": "https://www.mygr8skin.com/",
+      "observed_at": "2026-09-10T12:59:05.859Z",
+      "http_status": 200,
+      "source_html_sha256": "6a40a852a24d9d0ab37e9de51692125dc57e452e519a7d3a8557134943c7b582",
+      "jsonld_block_count": 1,
+      "jsonld_syntax_status": "valid_json_only",
+      "jsonld_blocks": [
+        {
+          "index": 0,
+          "syntax": "valid_json",
+          "data": {
+            "@context": "https://schema.org/",
+            "@type": "WebSite",
+            "name": "MyGr8skin",
+            "url": "https://www.mygr8skin.com"
+          },
+          "raw": "{\"@context\":\"https://schema.org/\",\"@type\":\"WebSite\",\"name\":\"MyGr8skin\",\"url\":\"https://www.mygr8skin.com\"}"
+        }
+      ],
+      "microdata_itemtypes": [],
+      "rdfa_types": [],
+      "relevant_metadata": {
+        "description": "Gr8Skin MedSpa in Plymouth, Minnesota offers quality products and services, has a passion for excellence, and is committed to exceeding the expectations of its clients. Are you looking to improve your skin's texture, tone and help reduce fine lines and wrinkles? Then Gr8Skin is the place to find it! ",
+        "og:description": "Gr8Skin MedSpa in Plymouth, Minnesota offers quality products and services, has a passion for excellence, and is committed to exceeding the expectations of its clients. Are you looking to improve your skin's texture, tone and help reduce fine lines and wrinkles? Then Gr8Skin is the place to find it! ",
+        "twitter:description": "Gr8Skin MedSpa in Plymouth, Minnesota offers quality products and services, has a passion for excellence, and is committed to exceeding the expectations of its clients. Are you looking to improve your skin's texture, tone and help reduce fine lines and wrinkles? Then Gr8Skin is the place to find it! "
+      },
+      "relevant_links": []
+    },
+    {
+      "source_url": "https://www.mygr8skin.com/contact",
+      "observed_at": "2026-09-10T12:59:07.048Z",
+      "http_status": 200,
+      "source_html_sha256": "02ede386c1c867ce009378a0f0335fca5dcbf5a6c3d5af39ce5ecd0c26aae09c",
+      "jsonld_block_count": 0,
+      "jsonld_syntax_status": "not_applicable_no_blocks",
+      "jsonld_blocks": [],
+      "microdata_itemtypes": [],
+      "rdfa_types": [],
+      "relevant_metadata": {
+        "description": "Address. Gr8Skin MedSpa, LLC 2855 Campus Drive Suite 475. Plymouth, MN 55441. Monday-Thursday 9:00-6:00* Friday 9:00-2:00* Other appointments available on request. *Please call ahead during summer hours as the business hours may vary.",
+        "og:description": "Address. Gr8Skin MedSpa, LLC 2855 Campus Drive Suite 475. Plymouth, MN 55441. Monday-Thursday 9:00-6:00* Friday 9:00-2:00* Other appointments available on request. *Please call ahead during summer hours as the business hours may vary.",
+        "twitter:description": "Address. Gr8Skin MedSpa, LLC 2855 Campus Drive Suite 475. Plymouth, MN 55441. Monday-Thursday 9:00-6:00* Friday 9:00-2:00* Other appointments available on request. *Please call ahead during summer hours as the business hours may vary."
+      },
+      "relevant_links": [
+        "http://maps.google.com/maps?q=2855+Campus+Drive,+Plymouth,+MN&ie=UTF8&hq=&hnear=2855+Campus+Dr,+Plymouth,+Hennepin,+Minnesota+55441&gl=us&z=16",
+        "https://es.salontranscripts.com/4d9b782d00017de94ca5a8c0/"
+      ]
+    },
+    {
+      "source_url": "https://www.mygr8skin.com/services",
+      "observed_at": "2026-09-10T12:59:05.389Z",
+      "http_status": 200,
+      "source_html_sha256": "39a48eccdf8448e535a71587283f7eaa89db065b92cf2d4f9ed257f9d1f99de7",
+      "jsonld_block_count": 0,
+      "jsonld_syntax_status": "not_applicable_no_blocks",
+      "jsonld_blocks": [],
+      "microdata_itemtypes": [],
+      "rdfa_types": [],
+      "relevant_metadata": {
+        "description": "We are a local Minnesota MedSpa that offers a variety of services including; Hair Reduction, elos Skin Rejuvenation, ReFirme, Dermal Fillers, BOTOX, Visia Complexion Analysis, Ematrix, Eyelash Tinting, Brow Tinting, and Dermaplaning. ",
+        "og:description": "We are a local Minnesota MedSpa that offers a variety of services including; Hair Reduction, elos Skin Rejuvenation, ReFirme, Dermal Fillers, BOTOX, Visia Complexion Analysis, Ematrix, Eyelash Tinting, Brow Tinting, and Dermaplaning. ",
+        "twitter:description": "We are a local Minnesota MedSpa that offers a variety of services including; Hair Reduction, elos Skin Rejuvenation, ReFirme, Dermal Fillers, BOTOX, Visia Complexion Analysis, Ematrix, Eyelash Tinting, Brow Tinting, and Dermaplaning. "
+      },
+      "relevant_links": []
+    }
+  ]
+}
