@@ -58,6 +58,7 @@ export default function FunnelPage() {
   const [scanDomain, setScanDomain] = useState("");
   const [scanTimestamp, setScanTimestamp] = useState("");
   const [showMethodology, setShowMethodology] = useState(false);
+  const [showScopeIntake, setShowScopeIntake] = useState(false);
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -401,16 +402,97 @@ export default function FunnelPage() {
             scanScore={score}
           />
 
-          <div className="text-[11.5px] text-[#8A8F87] text-center font-mono pt-1">
-            🔒 100% Secure Payment via Stripe · Target delivery within 24 hours after intake
+          <div className="text-[13px] text-[#3D423D] text-center font-mono pt-2 font-medium leading-snug">
+            Payment via Stripe · Target delivery within 24 hours after payment and required intake.
           </div>
         </div>
 
+        {/* Scope Note Below Offer */}
+        <div className="mt-6 text-center text-[13px] text-[#3D423D] font-sans max-w-[620px] mx-auto bg-[#FAFAF7] px-5 py-3.5 rounded-xl border border-[#EDEFEA] leading-relaxed">
+          Covers one practice location. Website implementation and ongoing monitoring are purchased separately. Inaccessible engine tests are marked pending; incomplete evidence does not receive a complete audit score.
+        </div>
+
         {/* Secondary Enterprise Footnote */}
-        <div className="mt-8 text-center text-[12.5px] text-[#8A8F87] font-mono max-w-[640px] mx-auto bg-[#FAFAF7] p-4 rounded-xl border border-[#EDEFEA]">
+        <div className="mt-3 text-center text-[12px] text-[#8A8F87] font-mono max-w-[620px] mx-auto">
           Need full schema graph implementation or multi-location monitoring? <br />
           <span className="text-[#3D423D] font-medium">Starter Install ($1,500)</span> and <span className="text-[#3D423D] font-medium">Monthly Monitoring ($249/mo)</span> options are detailed directly in your Audit report.
         </div>
+      </section>
+
+      {/* Expandable Section: Audit Scope & Intake */}
+      <section className="max-w-[1080px] mx-auto px-4 sm:px-8 pb-4">
+        <button
+          type="button"
+          onClick={() => setShowScopeIntake(!showScopeIntake)}
+          className="w-full py-4 px-5 rounded-2xl border border-[#D4D8D2] bg-white text-[14px] font-semibold text-[#191C1A] hover:bg-[#FAFAF7] transition-all flex items-center justify-between cursor-pointer font-sans shadow-2xs"
+        >
+          <span className="flex items-center gap-2.5">
+            <span className="font-mono text-[11px] text-[oklch(0.48_0.10_160)] bg-[oklch(0.96_0.03_160)] px-2.5 py-0.5 rounded font-bold uppercase">
+              Audit Scope &amp; Intake
+            </span>
+            <span>Required Intake Information &amp; Multi-Location Scope</span>
+          </span>
+          <span className="text-[oklch(0.48_0.10_160)] font-mono font-bold text-[13px]">
+            {showScopeIntake ? "Hide Details ↑" : "View Details ↓"}
+          </span>
+        </button>
+
+        {showScopeIntake && (
+          <div className="mt-4 bg-white border border-[#E3E6E1] rounded-2xl p-6 sm:p-8 animate-in fade-in duration-200 flex flex-col gap-6 text-[14px] leading-relaxed text-[#3D423D]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex flex-col gap-3">
+                <h4 className="font-serif text-[18px] font-semibold text-[#191C1A]">
+                  Required Intake Information
+                </h4>
+                <p className="text-[13.5px] text-[#5A6058]">
+                  After payment, the buyer provides the practice details needed to verify authoritative facts:
+                </p>
+                <ul className="space-y-2 text-[13.5px] font-mono">
+                  <li className="flex items-start gap-2">
+                    <span className="text-[oklch(0.48_0.10_160)] font-bold">1.</span>
+                    <span><strong>Canonical website URL:</strong> Official domain for technical inspection.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[oklch(0.48_0.10_160)] font-bold">2.</span>
+                    <span><strong>Practice name &amp; city:</strong> Legal/trading name and physical municipality.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[oklch(0.48_0.10_160)] font-bold">3.</span>
+                    <span><strong>Location count:</strong> Single clinic location vs. multi-location group.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[oklch(0.48_0.10_160)] font-bold">4.</span>
+                    <span><strong>Delivery email:</strong> Working email for report delivery and clarification.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-[oklch(0.48_0.10_160)] font-bold">5.</span>
+                    <span><strong>Owner confirmation of disputed facts:</strong> Authoritative corrections for address, services, pricing model, licensed providers, and booking URLs.</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="flex flex-col gap-3">
+                <h4 className="font-serif text-[18px] font-semibold text-[#191C1A]">
+                  Single vs. Multi-Location Scope
+                </h4>
+                <p className="text-[13.5px] text-[#5A6058]">
+                  The <strong>$297 Verified Audit</strong> covers exactly one physical clinic location.
+                </p>
+                <div className="p-4 bg-[#FAFAF7] rounded-xl border border-[#EDEFEA] flex flex-col gap-2">
+                  <div className="font-bold text-[#191C1A] text-[13.5px]">
+                    $750 Multi-Location Audit
+                  </div>
+                  <p className="text-[13px] text-[#5A6058] leading-normal">
+                    Practices with 2 or more locations require the separate <strong>$750 Multi-Location Audit</strong>. It includes cross-location NAP consistency, directory disambiguation, and separate query tests for each individual location market.
+                  </p>
+                </div>
+                <div className="text-[12px] text-[#8A8F87] font-mono leading-normal mt-1">
+                  *No shared passwords or login credentials are required. Real appointments are never booked, and no patient or customer data is transmitted.
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </section>
 
       {/* CHANGE 3: COLLAPSIBLE METHODOLOGY ACCORDION (THE 6 AI PATIENT JOURNEY TESTS + 100-POINT RUBRIC) */}
@@ -534,7 +616,7 @@ export default function FunnelPage() {
                   href="/sample-report"
                   className="inline-flex items-center gap-1.5 text-[13.5px] font-semibold text-[oklch(0.48_0.10_160)] hover:underline font-mono"
                 >
-                  View Full 100-Point Sample Audit Report →
+                  View the live evidence sample →
                 </Link>
               </div>
             </div>
@@ -552,7 +634,7 @@ export default function FunnelPage() {
             &quot;Your services, prices, policies, credentials, and booking actions are presented accurately to machines — and we show you exactly what agents can and cannot understand, before and after.&quot;
           </p>
           <p className="text-[14px] text-[#A9AEA6] max-w-[64ch] leading-[1.6]">
-            We do not promise rankings. AI engines are third parties we don&apos;t control. We promise implementation, monitoring, testing, and remediation — every stated fact carries its source, timestamp, and verification status.
+            We do not promise rankings. AI engines are third parties we don&apos;t control. The Verified Audit provides evidence testing, gap analysis, and a prioritized remediation roadmap. Implementation and continuous monitoring belong to the separate Foundation Install and Monitoring services. Every stated fact carries its source, timestamp, and verification status.
           </p>
         </div>
       </section>
@@ -568,7 +650,7 @@ export default function FunnelPage() {
               100-point scored rubric. Every point is a reproducible test with screenshot evidence and timestamps — including live queries to ChatGPT, Perplexity, and Google AI.
             </p>
             <Link href="/sample-report" className="text-[13.5px] font-semibold text-[oklch(0.48_0.10_160)] group-hover:underline flex items-center gap-1">
-              View a sample report →
+              View the live evidence sample →
             </Link>
           </div>
 
