@@ -310,7 +310,7 @@ export default function FunnelPage() {
                   <div className="text-[10px] tracking-[0.06em] uppercase text-[#5A6058] font-mono mt-0.5">of 100</div>
                 </div>
                 <div className="text-[13.5px] leading-[1.5] text-[#3D423D]">
-                  <strong className="text-[#191C1A]">{scanDomain}</strong> is mostly invisible to AI agents. Surface scan found {gaps.length} critical gaps:
+                  <strong className="text-[#191C1A]">{scanDomain}</strong> has observable machine-readability gaps. Surface scan found {gaps.length} critical gaps:
                 </div>
               </div>
 
@@ -336,7 +336,7 @@ export default function FunnelPage() {
                 Get the full 100-point Verified Audit — $297 ↓
               </button>
               <div className="text-[11.5px] text-[#8A8F87] text-center font-mono">
-                The full audit re-runs every check with screenshots, timestamps &amp; raw payloads.
+                The full audit inspects markup and runs live query tests with timestamps &amp; evidence captures.
               </div>
             </div>
           )}
@@ -360,7 +360,7 @@ export default function FunnelPage() {
             Get Your 100-Point Verified Audit
           </h2>
           <p className="text-[15px] text-[#5A6058] max-w-[54ch]">
-            Every gap tested with screenshots, timestamps, raw JSON-LD payloads, and a 5-step fix plan. One flat fee, zero recurring commitment.
+            Public markup review, attempted live AI query tests, evidence captures, and a prioritized 5-step remediation roadmap. One flat fee, zero recurring commitment.
           </p>
         </div>
 
@@ -382,27 +382,27 @@ export default function FunnelPage() {
 
           <div className="flex flex-col gap-2.5 font-mono text-[12.5px] text-[#3D423D]">
             <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">
-              <span>✓</span> <span>100-point reproducible score rubric</span>
+              <span>✓</span> <span>100-point rubric covering identity, pricing, trust &amp; crawl policy</span>
             </div>
             <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">
-              <span>✓</span> <span>Live ChatGPT, Perplexity &amp; Google AI evidence screenshots</span>
+              <span>✓</span> <span>Attempted ChatGPT, Perplexity &amp; Google AI query tests</span>
             </div>
             <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">
-              <span>✓</span> <span>Prioritized gap report + 5-step implementation roadmap</span>
+              <span>✓</span> <span>Prioritized gap report + 5-step remediation roadmap</span>
             </div>
             <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">
-              <span>✓</span> <span>Evidence zip bundle with raw payloads and audit logs</span>
+              <span>✓</span> <span>Evidence ZIP with source captures, manifest &amp; artifact hashes</span>
             </div>
           </div>
 
           <GateForm
-            buttonText="Get instant access — $297"
+            buttonText="Order Verified Audit — $297"
             scannedDomain={scanDomain}
             scanScore={score}
           />
 
           <div className="text-[11.5px] text-[#8A8F87] text-center font-mono pt-1">
-            🔒 100% Secure Payment via Stripe · Delivered within 24 hours
+            🔒 100% Secure Payment via Stripe · Target delivery within 24 hours after intake
           </div>
         </div>
 
@@ -643,13 +643,13 @@ export default function FunnelPage() {
             <div className="bg-[#FAFAF7] border border-[#EDEFEA] rounded-xl p-4 flex flex-col gap-2 font-mono text-[12px] text-[#3D423D]">
               <div className="font-bold text-[#191C1A] text-[12.5px]">What&apos;s included in this audit:</div>
               <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">✓ 100-point reproducible score rubric</div>
-              <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">✓ Live ChatGPT, Perplexity &amp; Google AI evidence</div>
-              <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">✓ Prioritized gap report + 5-step fix plan</div>
-              <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">✓ Evidence zip bundle with screenshots &amp; payloads</div>
+              <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">✓ Attempted ChatGPT, Perplexity &amp; Google AI query tests</div>
+              <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">✓ Prioritized gap report + 5-step remediation roadmap</div>
+              <div className="flex items-center gap-2 text-[oklch(0.48_0.10_160)]">✓ Evidence ZIP bundle with manifest &amp; artifact hashes</div>
             </div>
 
             <GateForm
-              buttonText="Get instant access — $297"
+              buttonText="Order Verified Audit — $297"
               onSuccess={() => setIsModalOpen(false)}
             />
           </div>

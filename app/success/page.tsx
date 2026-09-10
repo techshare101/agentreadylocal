@@ -32,22 +32,22 @@ export default function SuccessPage() {
           </div>
 
           <p className="text-[15px] sm:text-[16px] leading-[1.6] text-[#3D423D]">
-            Thank you for ordering the Verified Audit. Our engine is running live AI-readiness verification tests against ChatGPT, Perplexity, and Google AI Overview for your practice.
+            Thank you for ordering the Verified Audit. Our team is preparing your practice&apos;s audit and running live verification tests across supported AI answer engines.
           </p>
 
           <div className="bg-[#FAFAF7] border border-[#EDEFEA] rounded-xl p-5 w-full text-left flex flex-col gap-3 font-mono text-[13px]">
             <div className="font-bold text-[#191C1A] text-[13.5px]">What happens next:</div>
             <div className="flex items-start gap-2.5 text-[#3D423D]">
               <span className="text-[oklch(0.48_0.10_160)] font-bold">1.</span>
-              <span>Your audit PDF and test artifact bundle are generated automatically.</span>
+              <span>We inspect your public website, structured data markup, and execute live query tests across ChatGPT, Perplexity, and Google AI Overview.</span>
             </div>
             <div className="flex items-start gap-2.5 text-[#3D423D]">
               <span className="text-[oklch(0.48_0.10_160)] font-bold">2.</span>
-              <span>Your report will arrive at your provided work email within 24 hours.</span>
+              <span>Inaccessible engines are recorded and marked pending — we never invent scores or fabricate evidence.</span>
             </div>
             <div className="flex items-start gap-2.5 text-[#3D423D]">
               <span className="text-[oklch(0.48_0.10_160)] font-bold">3.</span>
-              <span>Our engineering team is available if you have questions on your gap analysis.</span>
+              <span>Your finished report and evidence ZIP bundle will be delivered directly to your email within 24 hours.</span>
             </div>
           </div>
 
