@@ -1,0 +1,75 @@
+Query: Gr8Skin MedSpa Plymouth services prices appointment
+Source: https://www.google.com/search?q=Gr8Skin+MedSpa+Plymouth+services+prices+appointment
+Text captured at: 2026-09-10T13:00:32.443Z
+Scope: AI Overview segment only; account controls and personal location excluded.
+
+
+- text: You can view treatments and book an appointment online through
+- button "Gr8Skin MedSpa":
+  - generic: Gr8Skin MedSpa
+- text: .
+- heading "Services" [level=3]
+- list:
+  - strong: Botox and Dermal Fillers
+  - strong: Hair Reduction
+  - strong: Elos Skin Rejuvenation and ReFirme
+  - strong: VISIA Skin Analysis
+  - link "www.mygr8skin.com (+1) - Services - Gr8Skin MedSpa, LLC | Plymouth,Minnesota. Related results":
+    - /url: https://www.mygr8skin.com/services
+  - button "www.mygr8skin.com (+1) - Services - Gr8Skin MedSpa, LLC | Plymouth,Minnesota. Related results":
+    - generic: www.mygr8skin.com
+    - generic: "+1"
+- heading "Prices" [level=3]
+- list:
+  - generic: Specific pricing is not listed online.
+  - generic: Free consultations are available to discuss customized treatment costs.
+  - link "www.mygr8skin.com - Gr8Skin MedSpa, LLC | Plymouth,Minnesota | Home. Related results" [active]:
+    - /url: https://www.mygr8skin.com/
+  - button "www.mygr8skin.com - Gr8Skin MedSpa, LLC | Plymouth,Minnesota | Home. Related results":
+    - generic: www.mygr8skin.com
+- heading "Location and Contact" [level=3]
+- list:
+  - strong: "Address:"
+  - text: 2805 Campus Drive, Suite 475, Plymouth, MN 55441
+  - strong: "Phone:"
+  - text: 612-202-6552
+  - strong: "Hours:"
+  - text: Monday–Thursday 9:00 AM – 6:00 PM, Friday 9:00 AM – 2:00 PM (hours may vary seasonally; call ahead)
+  - link "www.mygr8skin.com - Contact Us - Gr8Skin MedSpa, LLC | Plymouth,Minnesota. Related results":
+    - /url: https://www.mygr8skin.com/contact
+  - button "www.mygr8skin.com - Contact Us - Gr8Skin MedSpa, LLC | Plymouth,Minnesota. Related results":
+    - generic: www.mygr8skin.com
+- text: If you'd like, tell me
+- strong: which specific treatment
+- text: you are interested in, and I can help you find more details or prepare questions for your consultation.
+- list:
+  - link "Services - Gr8Skin MedSpa, LLC | Plymouth,Minnesota. Opens in new tab.":
+    - /url: https://www.mygr8skin.com/services
+  - generic: www.mygr8skin.com
+  - button "About this result":
+  - generic: Services - Gr8Skin MedSpa, LLC | Plymouth,Minnesota
+  - generic: We are a local Minnesota MedSpa that offers a variety of services including; Hair Reduction, elos Skin Rejuvenation, ReFirme, Derm...
+  - link "Gr8Skin MedSpa, LLC | Plymouth,Minnesota | Home. Opens in new tab.":
+    - /url: https://www.mygr8skin.com/
+  - generic: www.mygr8skin.com
+  - button "About this result":
+  - generic: Gr8Skin MedSpa, LLC | Plymouth,Minnesota | Home
+  - generic: SERVICES · PRODUCTS · SPECIALS · PORTFOLIO · REVIEWS · CONTACT US. Schedule Your FREE Consultation · 612-202-6552. Gr8Skin MedSpa ...
+- button "Show all related results":
+  - generic: Show all
+- text: This is for informational purposes only. For medical advice or diagnosis, consult a professional. AI responses may include mistakes.
+- link "Learn more about Generative AI. Opens in new tab.":
+  - /url: https://support.google.com/websearch?p=ai_overviews&hl=en
+  - text: Learn more
+- button "Copy":
+- button "Share":
+  - generic "Share":
+- button "Good response":
+  - img "Good response"
+- button "Bad response":
+  - img "Bad response"
+- button "More":
+- alert
+- textbox "Ask anything"
+- button "Add files, tools, and select a model":
+- button "Microphone":

@@ -1,0 +1,202 @@
+{
+  "schema_version": "1.0",
+  "audit_id": "ARL-20260910-GR8SKIN-001",
+  "practice": {
+    "name": "Gr8Skin MedSpa, LLC",
+    "city": "Plymouth, Minnesota",
+    "website": "https://www.mygr8skin.com/"
+  },
+  "audit_date": "2026-09-10",
+  "status": "partial",
+  "score": null,
+  "scope": "Public evidence sample: one branded Google AI Overview response and markup inspection of the homepage, contact page, and services page. This is not a completed 100-point audit.",
+  "relationship": "Independent review of public pages. The practice has not reviewed or endorsed this sample. Current operational details require owner confirmation.",
+  "timestamp_method": "UTC wall-clock observations recorded during browser captures and page retrievals. No trusted timestamp authority or cryptographic time attestation was used.",
+  "engine_tests": [
+    {
+      "id": "ENG-01",
+      "engine": "Google AI Overview",
+      "status": "captured",
+      "verification_status": "verified",
+      "observed_at": "2026-09-10T12:56:49.571Z",
+      "query": "Gr8Skin MedSpa Plymouth services prices appointment",
+      "query_submitted": true,
+      "source_url": "https://www.google.com/search?q=Gr8Skin+MedSpa+Plymouth+services+prices+appointment",
+      "screenshot": "google-ai-overview-2026-09-10T12-56-49-571Z.png",
+      "response_file": "google-ai-overview-response.txt",
+      "note": "A branded-query observation only. Recognition here does not establish performance for unbranded discovery queries."
+    },
+    {
+      "id": "ENG-02",
+      "engine": "ChatGPT",
+      "status": "pending_sign_in",
+      "verification_status": "pending",
+      "observed_at": null,
+      "query": "What services does Gr8Skin MedSpa in Plymouth, Minnesota offer, does its official website publish treatment prices, and how can someone request an appointment? Cite the sources you used. If you cannot verify a detail, say so.",
+      "query_submitted": true,
+      "source_url": "https://chatgpt.com/",
+      "screenshot": null,
+      "response_file": null,
+      "note": "The query led to a sign-in screen. No assistant response was captured; model identity is unverified. This is not a failed practice test."
+    },
+    {
+      "id": "ENG-03",
+      "engine": "Perplexity",
+      "status": "blocked_browser_verification",
+      "verification_status": "pending",
+      "observed_at": null,
+      "query": "What services does Gr8Skin MedSpa in Plymouth, Minnesota offer, does its official website publish treatment prices, and how can someone request an appointment? Cite the sources you used. If you cannot verify a detail, say so.",
+      "query_submitted": false,
+      "source_url": "https://www.perplexity.ai/",
+      "screenshot": null,
+      "response_file": null,
+      "note": "The security verification page persisted after one reload. The query was not submitted. No practice result or score can be inferred."
+    }
+  ],
+  "findings": [
+    {
+      "id": "IDN-01",
+      "title": "Conflicting street numbers on the official contact page",
+      "source": "Official website: visible contact page, metadata, and directions link",
+      "observed_at": "2026-09-10T12:59:07.048Z",
+      "confidence": "high",
+      "verification_status": "verified",
+      "observation": "The visible contact address is 2805 Campus Drive, Suite 475. The same page’s description, Open Graph description, and Google Maps link use 2855 Campus Drive.",
+      "limitation": "This verifies an inconsistency. It does not establish which street number is current or why an AI engine selected an address.",
+      "next_action": "Ask the practice owner to confirm the current address, then align the visible page, metadata, and directions link.",
+      "evidence_files": [
+        "clinic-contact-2026-09-10T12-57-39-951Z.png",
+        "contact-dom-evidence.json",
+        "schema-check.json"
+      ]
+    },
+    {
+      "id": "ENG-01",
+      "title": "Google identifies the practice in this branded query",
+      "source": "Google AI Overview",
+      "observed_at": "2026-09-10T12:56:49.571Z",
+      "confidence": "high",
+      "verification_status": "verified",
+      "observation": "The captured AI Overview names service groups, cites the official website, and gives 2805 Campus Drive. The practice is present in this response.",
+      "limitation": "One branded query does not measure ranking or unbranded discoverability. The response’s claim about pricing was not verified across the full website.",
+      "next_action": "Repeat a predefined query set in documented sessions after the address is confirmed; preserve favorable and unfavorable outcomes.",
+      "evidence_files": [
+        "google-ai-overview-2026-09-10T12-56-49-571Z.png",
+        "google-ai-overview-response.txt"
+      ]
+    },
+    {
+      "id": "SCH-01",
+      "title": "A WebSite JSON-LD block is present on the homepage",
+      "source": "Local inspection of three fetched public HTML pages",
+      "observed_at": "2026-09-10T12:59:07.048Z",
+      "confidence": "high",
+      "verification_status": "verified",
+      "observation": "The homepage contains one syntactically valid JSON-LD block of type WebSite. No JSON-LD blocks were detected in the fetched contact or services HTML. No microdata itemtypes or RDFa typeof attributes were detected in these snapshots.",
+      "limitation": "Syntax and inventory checks are not full Schema.org semantic validation. The external validator requested human verification. Results are limited to these three snapshots and do not imply that missing markup prevents an AI response.",
+      "next_action": "Complete semantic validation and evaluate any business or service markup against owner-confirmed facts.",
+      "evidence_files": [
+        "schema-check.json",
+        "inspect-public-markup.py"
+      ]
+    },
+    {
+      "id": "BOOK-01",
+      "title": "An explicit online booking link is available",
+      "source": "Official contact page",
+      "observed_at": "2026-09-10T12:57:39.951Z",
+      "confidence": "high",
+      "verification_status": "verified",
+      "observation": "The contact page contains a Book Appointment Online link to an external scheduling service, as well as a published telephone number.",
+      "limitation": "The presence and destination of the link were observed. Scheduling availability and a completed booking were not tested.",
+      "next_action": "Check the scheduling destination through to appointment selection without submitting a real appointment.",
+      "evidence_files": [
+        "clinic-contact-2026-09-10T12-57-39-951Z.png",
+        "contact-dom-evidence.json"
+      ]
+    }
+  ],
+  "images": [
+    {
+      "file": "google-ai-overview-2026-09-10T12-56-49-571Z.png",
+      "title": "Google AI Overview",
+      "caption": "Expanded response to the exact branded query. Cropped only to exclude account controls; response text is unchanged.",
+      "width": 1170,
+      "height": 790,
+      "observed_at": "2026-09-10T12:56:49.571Z",
+      "source_url": "https://www.google.com/search?q=Gr8Skin+MedSpa+Plymouth+services+prices+appointment",
+      "capture_format": "JPEG from browser screenshot API",
+      "published_format": "PNG",
+      "crop_pixels": [
+        80,
+        0,
+        1250,
+        790
+      ],
+      "processing": "JPEG decoded to pixels, optional documented crop, saved as PNG; no retouching, overlays, or generated pixels."
+    },
+    {
+      "file": "clinic-contact-2026-09-10T12-57-39-951Z.png",
+      "title": "Official contact page",
+      "caption": "The visible address is 2805 Campus Drive. The page also exposes a booking link. No form was submitted.",
+      "width": 1348,
+      "height": 926,
+      "observed_at": "2026-09-10T12:57:39.951Z",
+      "source_url": "https://www.mygr8skin.com/contact",
+      "capture_format": "JPEG from browser screenshot API",
+      "published_format": "PNG",
+      "crop_pixels": null,
+      "processing": "JPEG decoded to pixels, optional documented crop, saved as PNG; no retouching, overlays, or generated pixels."
+    }
+  ],
+  "schema_check_file": "schema-check.json",
+  "remaining_checks": [
+    "Capture a real ChatGPT response after sign-in and record the model actually displayed.",
+    "Capture a real Perplexity response in an accessible session.",
+    "Complete schema semantic validation; the public validator requested human verification.",
+    "Complete and publish the full 100-point rubric before assigning an audit score.",
+    "Obtain owner confirmation of current address and other business facts before recommending specific factual replacements."
+  ],
+  "supersedes": {
+    "audit_id": "ARL-2026-0114",
+    "reason": "Lakeshore Skin & Laser was a front-end prototype with fictitious scores and evidence filenames. No old score, claim, or screenshot is carried into this sample."
+  },
+  "artifacts": [
+    {
+      "path": "README.txt",
+      "size_bytes": 1487,
+      "sha256": "1a4933196fd21df564abcec3b5111a29b39c71cb984e543769ea5b2aa33e6576"
+    },
+    {
+      "path": "clinic-contact-2026-09-10T12-57-39-951Z.png",
+      "size_bytes": 483531,
+      "sha256": "900ea0fbfef8c97b875292e595f1ff18b6f4574b14592c77b6b907aed6afd859"
+    },
+    {
+      "path": "contact-dom-evidence.json",
+      "size_bytes": 799,
+      "sha256": "8b7b17a2ce3b75512477c8297b26225d11006add8d53af1b15e7ca8d2f321175"
+    },
+    {
+      "path": "google-ai-overview-2026-09-10T12-56-49-571Z.png",
+      "size_bytes": 322374,
+      "sha256": "ea8d4af3c0cf2da45e7017e515518cbae93693d1d553a1a433f286aa78b8bb44"
+    },
+    {
+      "path": "google-ai-overview-response.txt",
+      "size_bytes": 3573,
+      "sha256": "c4addd3e92c4846e13ce776358b5788a87b7a8c56a5bb314ee0fbfceb415cbc9"
+    },
+    {
+      "path": "inspect-public-markup.py",
+      "size_bytes": 3664,
+      "sha256": "cc4b02acb9086023dcf2f6a4b28e8790ae985aedc87d6f7dc4db7f895e0d61b6"
+    },
+    {
+      "path": "schema-check.json",
+      "size_bytes": 4980,
+      "sha256": "eda1fab1c96befefd03135547e1c424ec00715a92cb2d22e6feae9041e903360"
+    }
+  ],
+  "observation_context": "This is one contextual observation, not a standardized comparison or repeatability study. Responses may vary by time, location, and testing conditions; the exact query is preserved."
+}
