@@ -6,11 +6,7 @@ import AgentReadyLogo from "./components/AgentReadyLogo";
 import GateForm from "./components/GateForm";
 import ScanGateForm from "./components/ScanGateForm";
 
-interface Gap {
-  code: string;
-  text: string;
-  category: string;
-}
+
 
 interface RubricCategory {
   name: string;
@@ -28,15 +24,6 @@ const CHECKS = [
   "Reading robots.txt / llms.txt crawl policy",
 ];
 
-const GAP_POOL: Gap[] = [
-  { code: "SVC-04", text: "No structured service catalog — agents can't list what you offer or at what price.", category: "Services & Pricing" },
-  { code: "IDN-02", text: "Business identity schema missing NAP consistency — agents can't confirm entity across sources.", category: "Identity" },
-  { code: "ACT-01", text: "Booking path is JavaScript-only — no machine-readable action an agent can complete or cite.", category: "Actions" },
-  { code: "TRS-03", text: "Practitioner credentials locked in images, not text — invisible to every AI engine.", category: "Trust" },
-  { code: "CRL-01", text: "No llms.txt and restrictive robots rules — AI crawlers are partially blocked from your facts.", category: "Crawl Policy" },
-  { code: "FRS-01", text: "Pricing page last updated signal missing — engines treat your prices as stale.", category: "Freshness" },
-];
-
 const RUBRIC: RubricCategory[] = [
   { name: "Identity", pts: "15", desc: "Legal name, locations, NAP consistency, entity disambiguation.", tests: ["IDN-01: LocalBusiness schema", "IDN-02: Directory NAP match", "IDN-03: sameAs entity links"] },
   { name: "Services + pricing", pts: "15", desc: "Structured catalog with prices agents can quote accurately.", tests: ["SVC-01: Treatment schema", "SVC-04: Offer price markup", "SVC-05: Crawlable price page"] },
@@ -48,15 +35,38 @@ const RUBRIC: RubricCategory[] = [
   { name: "Freshness", pts: "5", desc: "Update signals so engines trust prices aren't stale.", tests: ["FRS-01: Page lastmod headers", "FRS-02: Price update date", "FRS-03: Freshness meta tags"] },
 ];
 
+interface CheckItem {
+  id: string;
+  name: string;
+  passed: boolean;
+  score: number;
+  maxScore: number;
+  publicSummary: string;
+}
+
+interface UnlockedGap {
+  checkId: string;
+  name: string;
+  code: string;
+  category: string;
+  defect: string;
+  chatGptObservation: string;
+  oneLineFix: string;
+}
+
 export default function FunnelPage() {
   const [domain, setDomain] = useState("");
-  const [phase, setPhase] = useState<"idle" | "running" | "gated" | "done">("idle");
+  const [phase, setPhase] = useState<"idle" | "running" | "gated" | "done" | "blocked" | "unreachable">("idle");
   const [checkLog, setCheckLog] = useState<string[]>([]);
   const [currentCheck, setCurrentCheck] = useState("");
   const [score, setScore] = useState(0);
-  const [gaps, setGaps] = useState<Gap[]>([]);
+  const [scoreHeadline, setScoreHeadline] = useState("");
+  const [checks, setChecks] = useState<CheckItem[]>([]);
+  const [failedCount, setFailedCount] = useState(0);
+  const [unlockedGaps, setUnlockedGaps] = useState<UnlockedGap[]>([]);
   const [scanDomain, setScanDomain] = useState("");
   const [scanTimestamp, setScanTimestamp] = useState("");
+  const [scanStatus, setScanStatus] = useState<"success" | "blocked" | "unreachable">("success");
   const [showMethodology, setShowMethodology] = useState(false);
   const [showScopeIntake, setShowScopeIntake] = useState(false);
 
@@ -81,14 +91,13 @@ export default function FunnelPage() {
     }
   }, []);
 
-  const stringHash = (s: string) => {
-    let h = 0;
-    for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-    return h;
-  };
+  const runScan = async () => {
+    const raw = (domain || "lakeshoreskin.com").trim();
+    const d = raw
+      .replace(/^https?:\/\//i, "")
+      .replace(/\/.*$/, "")
+      .replace(/^www\./i, "");
 
-  const runScan = () => {
-    const d = (domain || "lakeshoreskin.com").trim().replace(/^https?:\/\//i, "").replace(/\/.*$/, "");
     if (timerRef.current) clearTimeout(timerRef.current);
 
     setPhase("running");
@@ -104,44 +113,75 @@ export default function FunnelPage() {
       } catch (e) {}
     }
 
+    // Progress animation steps alongside API probe
     let i = 0;
-    const step = () => {
-      i++;
-      if (i < CHECKS.length) {
-        setCheckLog((prev) => [...prev, CHECKS[i - 1]]);
-        setCurrentCheck(CHECKS[i]);
-        timerRef.current = setTimeout(step, 550);
-      } else {
-        const h = Math.abs(stringHash(d));
-        const calculatedScore = 24 + (h % 34);
-        const rawIndices = [h % 6, Math.floor(h / 7) % 6, Math.floor(h / 49) % 6];
-        const seen = new Set<number>();
-        const foundGaps: Gap[] = [];
-        for (const raw of rawIndices) {
-          let k = Math.abs(Math.floor(raw)) % GAP_POOL.length;
-          let attempts = 0;
-          while (seen.has(k) && attempts < GAP_POOL.length) {
-            k = (k + 1) % GAP_POOL.length;
-            attempts++;
-          }
-          seen.add(k);
-          const gapItem = GAP_POOL[k] || GAP_POOL[0];
-          foundGaps.push(gapItem);
+    const animationPromise = new Promise<void>((resolve) => {
+      const step = () => {
+        i++;
+        if (i < CHECKS.length) {
+          setCheckLog((prev) => [...prev, CHECKS[i - 1]]);
+          setCurrentCheck(CHECKS[i]);
+          timerRef.current = setTimeout(step, 600);
+        } else {
+          resolve();
         }
-        setScore(calculatedScore);
-        setGaps(foundGaps);
-        setPhase("gated");
+      };
+      timerRef.current = setTimeout(step, 600);
+    });
 
-        // Fire ScanCompleted Meta Pixel custom event
-        if (typeof window !== "undefined" && window.fbq) {
-          try {
-            window.fbq("trackCustom", "ScanCompleted", { domain: d, score: calculatedScore });
-          } catch (e) {}
-        }
+    try {
+      const [scanRes] = await Promise.all([
+        fetch("/api/scan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ domain: d }),
+        }).then((r) => r.json()),
+        animationPromise,
+      ]);
+
+      if (scanRes.status === "blocked") {
+        setScanStatus("blocked");
+        setScore(0);
+        setScoreHeadline(scanRes.scoreHeadline || `We couldn't scan ${d} automatically — your site is blocking automated requests.`);
+        setFailedCount(6);
+        setChecks([]);
+        setPhase("blocked");
+        return;
       }
-    };
 
-    timerRef.current = setTimeout(step, 550);
+      if (scanRes.status === "unreachable") {
+        setScanStatus("unreachable");
+        setScore(0);
+        setScoreHeadline(scanRes.scoreHeadline || `Couldn't reach ${d} — host is unreachable or offline.`);
+        setFailedCount(6);
+        setChecks([]);
+        setPhase("unreachable");
+        return;
+      }
+
+      // Success
+      setScanStatus("success");
+      setScore(scanRes.score);
+      setScoreHeadline(scanRes.scoreHeadline);
+      setChecks(scanRes.checks || []);
+      setFailedCount(scanRes.failedCount ?? 0);
+      setPhase("gated");
+
+      // Fire ScanCompleted Meta Pixel custom event
+      if (typeof window !== "undefined" && window.fbq) {
+        try {
+          window.fbq("trackCustom", "ScanCompleted", { domain: d, score: scanRes.score });
+        } catch (e) {}
+      }
+    } catch (err) {
+      console.error("Scan fetch error:", err);
+      setScanStatus("unreachable");
+      setScore(0);
+      setScoreHeadline(`Couldn't reach ${d} — connection timed out or host is offline.`);
+      setFailedCount(6);
+      setChecks([]);
+      setPhase("unreachable");
+    }
   };
 
   const scrollToTop = (e: React.MouseEvent) => {
@@ -198,7 +238,7 @@ export default function FunnelPage() {
         </nav>
       </header>
 
-      {/* Hero & Surface Scan — ORIGINAL 2-COLUMN HERO (UNTOUCHED) */}
+      {/* Hero & Surface Scan */}
       <section className="max-w-[1080px] mx-auto px-4 sm:px-8 pt-8 sm:pt-12 pb-[56px] grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-[40px] lg:gap-[56px] items-start">
         {/* Left Hero Column */}
         <div className="flex flex-col gap-[22px]">
@@ -279,56 +319,178 @@ export default function FunnelPage() {
             </div>
           )}
 
-          {/* Gated Email Capture State */}
+          {/* State 3: Gated Email Capture State */}
           {phase === "gated" && (
             <div className="flex flex-col gap-4 animate-in fade-in duration-300">
+              {/* 3.1 Score Block */}
               <div className="flex items-center gap-4 bg-[#F2F4F0] rounded-[12px] p-4 border border-[#E3E6E1]">
                 <div className="flex flex-col items-center justify-center min-w-[76px] py-1 bg-white rounded-lg border border-[#E3E6E1] shadow-2xs">
                   <div className="font-serif text-[36px] font-semibold text-[#B3261E] leading-none">{score}</div>
                   <div className="text-[10px] tracking-[0.06em] uppercase text-[#5A6058] font-mono mt-0.5">of 100</div>
                 </div>
                 <div className="text-[13.5px] leading-[1.5] text-[#3D423D]">
-                  <strong className="text-[#191C1A]">{scanDomain}</strong> scored <strong className="text-[#B3261E]">{score}/100</strong>. Surface scan found {gaps.length} critical gaps in schema, booking path &amp; pricing visibility.
+                  {scoreHeadline}
                 </div>
               </div>
 
-              <ScanGateForm scanDomain={scanDomain} scanScore={score} onUnlock={() => setPhase("done")} />
-            </div>
-          )}
-
-          {/* Done State */}
-          {phase === "done" && (
-            <div className="flex flex-col gap-4 animate-in fade-in duration-300">
-              <div className="flex justify-between items-center font-mono text-[10px] text-[#8A8F87] bg-[#FAFAF7] px-3 py-1.5 rounded-lg border border-[#EDEFEA]">
-                <span>source: Surface Crawler</span>
-                <span>observed_at {scanTimestamp}</span>
-                <span className="text-[oklch(0.48_0.10_160)] font-semibold">verified</span>
-              </div>
-
-              <div className="flex items-center gap-4 bg-[#F2F4F0] rounded-[12px] p-4 border border-[#E3E6E1]">
-                <div className="flex flex-col items-center justify-center min-w-[76px] py-1 bg-white rounded-lg border border-[#E3E6E1] shadow-2xs">
-                  <div className="font-serif text-[36px] font-semibold text-[#B3261E] leading-none">{score}</div>
-                  <div className="text-[10px] tracking-[0.06em] uppercase text-[#5A6058] font-mono mt-0.5">of 100</div>
+              {/* 3.2 Six Check Results List */}
+              <div className="flex flex-col gap-1.5 bg-[#FAFAF7] p-3 sm:p-3.5 rounded-xl border border-[#EDEFEA] font-mono text-[12.5px]">
+                <div className="text-[10.5px] tracking-wider uppercase text-[#8A8F87] font-semibold pb-1 border-b border-[#EDEFEA] flex justify-between">
+                  <span>SURFACE CRITERIA</span>
+                  <span>STATUS</span>
                 </div>
-                <div className="text-[13.5px] leading-[1.5] text-[#3D423D]">
-                  <strong className="text-[#191C1A]">{scanDomain}</strong> has observable machine-readability gaps. Surface scan found {gaps.length} critical gaps:
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                {gaps.map((gap, idx) => (
-                  <div key={idx} className="flex gap-2.5 items-start text-[13px] leading-[1.45] bg-[#FAFAF7] p-2.5 rounded-lg border border-[#EDEFEA]">
-                    <span className="font-mono text-[10.5px] text-[#B3261E] bg-[oklch(0.95_0.02_25)] border border-[oklch(0.90_0.04_25)] rounded px-1.5 py-0.5 whitespace-nowrap font-medium">
-                      {gap.code}
-                    </span>
-                    <div className="flex flex-col gap-0.5">
-                      <span className="text-[#191C1A] font-medium text-[12px] uppercase tracking-wide font-mono text-[#5A6058]">{gap.category}</span>
-                      <span className="text-[#3D423D]">{gap.text}</span>
+                {checks.map((check) => (
+                  <div key={check.id} className="flex items-center justify-between py-1.5 border-b border-[#F0F2ED] last:border-0">
+                    <div className="flex items-center gap-2">
+                      {check.passed ? (
+                        <span className="text-[oklch(0.48_0.10_160)] font-bold text-[14px]">✓</span>
+                      ) : (
+                        <span className="text-[#B3261E] font-bold text-[14px]">✗</span>
+                      )}
+                      <span className="text-[#191C1A] font-sans font-medium text-[13px]">{check.name}</span>
+                    </div>
+                    <div className="text-[12px] text-right font-sans">
+                      {check.passed ? (
+                        <span className="text-[#5A6058]">{check.publicSummary}</span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[#8A8F87] bg-[#ECEEE9] px-2 py-0.5 rounded text-[11px] font-medium font-mono">
+                          🔒 Locked
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
               </div>
 
+              {/* State 4: Email Gate Form */}
+              <ScanGateForm
+                scanDomain={scanDomain}
+                scanScore={score}
+                failedCount={failedCount}
+                scanStatus={scanStatus}
+                onUnlock={(findings) => {
+                  setUnlockedGaps(findings);
+                  setPhase("done");
+                }}
+              />
+            </div>
+          )}
+
+          {/* Blocked by WAF State */}
+          {phase === "blocked" && (
+            <div className="flex flex-col gap-4 animate-in fade-in duration-300">
+              <div className="flex flex-col gap-2 bg-[oklch(0.98_0.02_45)] border border-[oklch(0.88_0.05_45)] rounded-xl p-4 text-[#4A3820]">
+                <div className="flex items-center gap-2 text-[11px] font-mono font-semibold uppercase tracking-wider text-[#A04000]">
+                  <span>⚠️ Automated Scan Blocked by Firewall</span>
+                </div>
+                <div className="text-[13px] leading-[1.5] text-[#3D423D]">
+                  <strong className="text-[#191C1A]">{scanDomain}</strong> is actively blocking automated crawler requests via Cloudflare, Wordfence, or WAF rules. That often means AI assistants (ChatGPT, Claude, Perplexity) are also barred from reading your clinic&apos;s business facts.
+                </div>
+              </div>
+
+              <ScanGateForm
+                scanDomain={scanDomain}
+                scanScore={0}
+                failedCount={6}
+                scanStatus="blocked"
+                onUnlock={(findings) => {
+                  setUnlockedGaps(findings);
+                  setPhase("done");
+                }}
+              />
+            </div>
+          )}
+
+          {/* Unreachable State */}
+          {phase === "unreachable" && (
+            <div className="flex flex-col gap-4 animate-in fade-in duration-300">
+              <div className="flex flex-col gap-2 bg-[#FDF2F2] border border-[#F5C2C2] rounded-xl p-4 text-[#8C1D18]">
+                <div className="flex items-center gap-2 text-[11px] font-mono font-semibold uppercase tracking-wider text-[#B3261E]">
+                  <span>Host Unreachable</span>
+                </div>
+                <div className="text-[13px] leading-[1.5] text-[#3D423D]">
+                  We couldn&apos;t reach <strong className="text-[#191C1A]">{scanDomain}</strong>. Please confirm the website is online and spelled correctly.
+                </div>
+              </div>
+
+              <ScanGateForm
+                scanDomain={scanDomain}
+                scanScore={0}
+                failedCount={6}
+                scanStatus="unreachable"
+                onUnlock={(findings) => {
+                  setUnlockedGaps(findings);
+                  setPhase("done");
+                }}
+              />
+            </div>
+          )}
+
+          {/* Done State: Post-Submit Inline Unlock */}
+          {phase === "done" && (
+            <div className="flex flex-col gap-4 animate-in fade-in duration-300">
+              <div className="flex justify-between items-center font-mono text-[10px] text-[#8A8F87] bg-[#FAFAF7] px-3 py-1.5 rounded-lg border border-[#EDEFEA]">
+                <span>source: AgentReady Surface Crawler</span>
+                <span>observed_at {scanTimestamp}</span>
+                <span className="text-[oklch(0.48_0.10_160)] font-semibold">unlocked</span>
+              </div>
+
+              {scanStatus === "success" && (
+                <div className="flex items-center gap-4 bg-[#F2F4F0] rounded-[12px] p-4 border border-[#E3E6E1]">
+                  <div className="flex flex-col items-center justify-center min-w-[76px] py-1 bg-white rounded-lg border border-[#E3E6E1] shadow-2xs">
+                    <div className="font-serif text-[36px] font-semibold text-[#B3261E] leading-none">{score}</div>
+                    <div className="text-[10px] tracking-[0.06em] uppercase text-[#5A6058] font-mono mt-0.5">of 100</div>
+                  </div>
+                  <div className="text-[13.5px] leading-[1.5] text-[#3D423D]">
+                    {scoreHeadline}
+                  </div>
+                </div>
+              )}
+
+              {/* Zero-Gap Success Banner */}
+              {failedCount === 0 && (
+                <div className="flex flex-col gap-2 bg-[oklch(0.96_0.03_160)] border border-[oklch(0.85_0.06_160)] rounded-xl p-4 text-[#1E4A35]">
+                  <div className="font-bold text-[14.5px] flex items-center gap-2 text-[oklch(0.38_0.12_160)]">
+                    <span>✓ All 6 surface checks passed</span>
+                  </div>
+                  <p className="text-[13px] text-[#2C5240] leading-[1.5]">
+                    Your domain provides clean machine-readable surface data. As AI search engines refresh their training pipelines and retrieval algorithms monthly, keeping these facts synchronized requires continuous verification.
+                  </p>
+                </div>
+              )}
+
+              {/* Unlocked Gap Findings List */}
+              {unlockedGaps.length > 0 && (
+                <div className="flex flex-col gap-2.5">
+                  <div className="text-[12px] font-mono uppercase text-[#5A6058] font-semibold">
+                    Identified Gaps ({unlockedGaps.length}):
+                  </div>
+                  {unlockedGaps.map((gap, idx) => (
+                    <div key={idx} className="flex flex-col gap-1.5 text-[13px] leading-[1.45] bg-[#FAFAF7] p-3 rounded-lg border border-[#EDEFEA]">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono text-[10.5px] text-[#B3261E] bg-[oklch(0.95_0.02_25)] border border-[oklch(0.90_0.04_25)] rounded px-1.5 py-0.5 whitespace-nowrap font-medium">
+                            {gap.code}
+                          </span>
+                          <span className="text-[#191C1A] font-semibold text-[13px]">{gap.name}</span>
+                        </div>
+                        <span className="text-[10px] uppercase font-mono text-[#8A8F87]">{gap.category}</span>
+                      </div>
+                      <div className="text-[12.5px] text-[#3D423D]">
+                        <strong>Defect:</strong> {gap.defect}
+                      </div>
+                      <div className="text-[12.5px] text-[#5A6058] bg-white p-2 rounded border border-[#EDEFEA] font-sans">
+                        <strong>AI Assistant View:</strong> &ldquo;{gap.chatGptObservation}&rdquo;
+                      </div>
+                      <div className="text-[12px] text-[oklch(0.40_0.10_160)] font-medium font-mono">
+                        → Fix: {gap.oneLineFix}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* $297 Offer CTA Directly Below Unlocked Findings */}
               <button
                 type="button"
                 onClick={handleCheckoutClick}
@@ -351,7 +513,7 @@ export default function FunnelPage() {
         </div>
       </section>
 
-      {/* CHANGE 2: $297 OFFER CARD MOVED UP, DIRECTLY UNDER SCANNER / GAPS */}
+      {/* $297 OFFER CARD MOVED UP, DIRECTLY UNDER SCANNER / GAPS */}
       <section id="pricing" className="max-w-[1080px] mx-auto px-4 sm:px-8 pt-2 pb-12">
         <div className="flex flex-col items-center text-center gap-3 mb-8">
           <div className="text-[12px] font-semibold tracking-[0.08em] uppercase text-[oklch(0.48_0.10_160)] font-mono bg-[oklch(0.96_0.03_160)] px-3 py-1 rounded-full">

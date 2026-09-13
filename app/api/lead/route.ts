@@ -80,7 +80,54 @@ export async function POST(req: Request) {
     }
 
     if (scanOnly) {
-      return NextResponse.json({ success: leadCaptured, leadCaptured });
+      let unlockedFindings: any[] = [];
+      let reportStatus = 'success';
+      let reportScore = typeof scan_score === 'number' ? scan_score : 0;
+
+      if (scanned_domain) {
+        try {
+          const { probeDomain } = await import('@/lib/scanner');
+          const report = await probeDomain(scanned_domain);
+          reportStatus = report.status;
+          reportScore = report.score;
+          unlockedFindings = report.checks
+            .filter((c) => !c.passed && c.finding)
+            .map((c) => ({
+              checkId: c.id,
+              name: c.name,
+              ...c.finding!,
+            }));
+
+          // Optional: Dispatch email report if Resend API key is configured
+          const resendKey = process.env.RESEND_API_KEY;
+          if (resendKey && unlockedFindings.length > 0) {
+            try {
+              const { Resend } = await import('resend');
+              const resend = new Resend(resendKey);
+              await resend.emails.send({
+                from: 'AgentReady Local <audit@metalmindtech.com>',
+                to: cleanEmail,
+                subject: `Your AI-Readiness Fix Report for ${scanned_domain}`,
+                text: `AgentReady AI-Readiness Report for ${scanned_domain}\nScore: ${reportScore}/100\n\nIdentified Gaps:\n` +
+                  unlockedFindings.map((f, i) => `${i + 1}. [${f.code}] ${f.name}\nDefect: ${f.defect}\nFix: ${f.oneLineFix}\n`).join('\n') +
+                  `\nGet your full 100-point verified audit at https://agentready.metalmindtech.com`,
+              });
+            } catch (emailErr) {
+              console.warn('[EMAIL_DELIVERY_WARN]:', emailErr);
+            }
+          }
+        } catch (scanErr) {
+          console.error('[LEAD_UNLOCK_SCAN_ERROR]:', scanErr);
+        }
+      }
+
+      return NextResponse.json({
+        success: leadCaptured,
+        leadCaptured,
+        unlockedFindings,
+        reportStatus,
+        reportScore,
+      });
     }
 
     // 2. Create Stripe Checkout Session
