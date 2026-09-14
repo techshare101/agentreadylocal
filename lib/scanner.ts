@@ -58,11 +58,10 @@ const CREDENTIAL_TERMS = [
   "master injector", "aesthetic nurse"
 ];
 
-const BOOKING_ENGINE_INDICATORS = [
+const VERIFIED_BOOKING_PLATFORMS = [
   "boulevard.io", "joinboulevard", "vagaro.com", "mindbodyonline.com", "jane.app",
   "zenoti.com", "acuityscheduling.com", "calendly.com", "mangomint.com",
-  "booker.com", "patientnow.com", "nextech.com", "glossgenius.com",
-  "/book", "/booking", "/schedule", "/appointment", "/book-now", "/request-appointment"
+  "booker.com", "patientnow.com", "nextech.com", "glossgenius.com"
 ];
 
 export function cleanDomain(input: string): string {
@@ -456,10 +455,19 @@ export async function probeDomain(rawDomain: string): Promise<ScanReport> {
   }
 
   // 5. Booking Path (Max 15 pts: 0 / 7 / 15)
-  const detectedBookingEngines = BOOKING_ENGINE_INDICATORS.filter((engine) =>
-    homepageHtml.toLowerCase().includes(engine)
-  );
-  const hasGenericForm = /<form[^>]*action/i.test(homepageHtml) || /\/contact/i.test(homepageHtml);
+  const detectedBookingEngines = VERIFIED_BOOKING_PLATFORMS.filter((engine) => {
+    const regex = new RegExp(`href=["'][^"']*${engine.replace('.', '\\.')}[^"']*["']`, "gi");
+    const matches = homepageHtml.match(regex) || [];
+    if (matches.length === 0) return false;
+    // Exclude links that are exclusively for giftcards, webstore merchandise, or package sales
+    const appointmentMatches = matches.filter(
+      (m) => !/giftcard|webstoreNew\/sales|seriespackage|merchandise|shop/i.test(m)
+    );
+    return appointmentMatches.length > 0;
+  });
+  const hasGenericFormOrAnchor =
+    /<form[^>]*action/i.test(homepageHtml) ||
+    /href=["'][^"']*(?:contact|consult|appointment|schedule|book)/i.test(homepageHtml);
 
   let bookingScore = 0;
   let bookingPassed = false;
@@ -469,17 +477,17 @@ export async function probeDomain(rawDomain: string): Promise<ScanReport> {
   if (detectedBookingEngines.length >= 1) {
     bookingScore = 15;
     bookingPassed = true;
-    bookingSummary = "Direct booking path detected";
-  } else if (hasGenericForm) {
+    bookingSummary = "Direct booking path detected (15/15 pts)";
+  } else if (hasGenericFormOrAnchor) {
     bookingScore = 7;
     bookingPassed = false;
     bookingSummary = "Locked";
     bookingFinding = {
       code: "ACT-02",
       category: "Actions & Booking",
-      defect: "Static contact form found, but no direct machine-readable appointment scheduling link or action payload.",
-      chatGptObservation: "AI assistants tell users to call during business hours rather than citing a direct link to book immediately.",
-      oneLineFix: "Deploy Schema.org/ReserveAction linking directly to your online scheduling engine.",
+      defect: "Consultation request form or anchor link found, but no direct machine-readable scheduling engine is integrated.",
+      chatGptObservation: "AI assistants tell users to call or submit an inquiry form rather than citing an instant booking link.",
+      oneLineFix: "Deploy Schema.org/ReserveAction linked directly to an online scheduling platform.",
     };
   } else {
     bookingScore = 0;
@@ -508,11 +516,11 @@ export async function probeDomain(rawDomain: string): Promise<ScanReport> {
     if (llmsTxtFound) {
       crawlScore = 15;
       crawlPassed = true;
-      crawlSummary = "Allows AI crawlers + llms.txt present";
+      crawlSummary = "Allows AI crawlers + llms.txt (15/15 pts)";
     } else {
       crawlScore = 12; // 12 of 15 for allowing crawlers without dedicated llms.txt
       crawlPassed = true;
-      crawlSummary = "Allows AI crawlers";
+      crawlSummary = "Allows AI crawlers (missing llms.txt · 12/15 pts)";
     }
   } else if (!hasUniversalBlock && blocksAiBots) {
     crawlScore = 5;
