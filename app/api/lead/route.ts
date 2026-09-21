@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, after } from 'next/server';
+import { notifyLead } from '@/lib/notify';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
@@ -79,7 +80,17 @@ export async function POST(req: Request) {
       console.error('[CRITICAL] LEAD_CAPTURE_SKIPPED: Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
     }
 
+    const alertMeta = {
+      email: cleanEmail,
+      userAgent: req.headers.get('user-agent'),
+      referer: req.headers.get('referer'),
+      fbclid: fbclid || null,
+      utmCampaign: utm_campaign || null,
+      utmContent: utm_content || null,
+    };
+
     if (scanOnly) {
+      let failedCheckNames: string[] = [];
       let unlockedFindings: any[] = [];
       let reportStatus = 'success';
       let reportScore = typeof scan_score === 'number' ? scan_score : 0;
@@ -90,6 +101,7 @@ export async function POST(req: Request) {
           const report = await probeDomain(scanned_domain);
           reportStatus = report.status;
           reportScore = report.score;
+          failedCheckNames = report.checks.filter((c) => !c.passed).map((c) => c.name);
           unlockedFindings = report.checks
             .filter((c) => !c.passed && c.finding)
             .map((c) => ({
@@ -121,6 +133,18 @@ export async function POST(req: Request) {
         }
       }
 
+      // Instant lead alert to the Architect — runs after the response, never blocks the unlock
+      after(() =>
+        notifyLead({
+          ...alertMeta,
+          domain: scanned_domain || '',
+          score: reportScore,
+          status: reportStatus,
+          failedChecks: failedCheckNames,
+          stage: 'scanned',
+        })
+      );
+
       return NextResponse.json({
         success: leadCaptured,
         leadCaptured,
@@ -129,6 +153,16 @@ export async function POST(req: Request) {
         reportScore,
       });
     }
+
+    // Instant checkout-intent alert ($297) — fires even if Stripe fails below
+    after(() =>
+      notifyLead({
+        ...alertMeta,
+        domain: scanned_domain || '',
+        score: typeof scan_score === 'number' ? scan_score : 0,
+        stage: 'checkout_started',
+      })
+    );
 
     // 2. Create Stripe Checkout Session
     const stripeSecretKey = process.env.STRIPE_SECRET_KEY;

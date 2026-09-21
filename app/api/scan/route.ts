@@ -1,5 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { probeDomain, sanitizeReportForUngated } from "@/lib/scanner";
+import { notifyScan } from "@/lib/notify";
 
 export const maxDuration = 15; // Set Vercel function timeout budget
 
@@ -10,6 +11,20 @@ export async function POST(req: NextRequest) {
 
     const report = await probeDomain(rawDomain);
     const sanitized = sanitizeReportForUngated(report);
+
+    // Instant scan alert — runs after the response is sent, never blocks or breaks the scan
+    const userAgent = req.headers.get("user-agent");
+    const referer = req.headers.get("referer");
+    after(() =>
+      notifyScan({
+        domain: report.domain || rawDomain,
+        score: report.score,
+        status: report.status,
+        failedChecks: report.checks.filter((c) => !c.passed).map((c) => c.name),
+        userAgent,
+        referer,
+      })
+    );
 
     return NextResponse.json(sanitized);
   } catch (err: any) {
