@@ -239,17 +239,21 @@ export default function FunnelPage() {
       </header>
 
       {/* Hero & Surface Scan */}
-      <section className="max-w-[1080px] mx-auto px-4 sm:px-8 pt-8 sm:pt-12 pb-[56px] grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-[40px] lg:gap-[56px] items-start">
-        {/* Left Hero Column */}
-        <div className="flex flex-col gap-[22px]">
+      <section className="max-w-[1080px] mx-auto px-4 sm:px-8 pt-8 sm:pt-12 pb-[56px] grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-6 lg:gap-x-[56px] lg:gap-y-[28px] items-start">
+        {/* Hook — stays above the scanner on every breakpoint */}
+        <div className="flex flex-col gap-[18px] order-1 lg:col-start-1 lg:row-start-1">
           <div className="inline-flex items-center gap-2 text-[12px] tracking-[0.1em] uppercase text-[oklch(0.48_0.10_160)] font-semibold font-mono bg-[oklch(0.96_0.03_160)] px-3 py-1 rounded-full w-fit">
             AI-Readiness for Med Spas &amp; Aesthetic Practices
           </div>
           <h1 className="font-serif font-medium text-[34px] sm:text-[44px] lg:text-[48px] leading-[1.12] tracking-[-0.015em] text-balance text-[#191C1A]">
-            When someone asks ChatGPT for the best med spa in your city, does it know you exist?
+            When a patient asks ChatGPT for a med spa near you, it recommends someone else.
           </h1>
+        </div>
+
+        {/* Supporting copy — below the scanner on mobile, under the hook on desktop */}
+        <div className="flex flex-col gap-[22px] order-3 lg:order-none lg:col-start-1 lg:row-start-2">
           <p className="text-[15px] sm:text-[17px] leading-[1.6] text-[#3D423D] max-w-[52ch] text-pretty">
-            Your future patient may never visit Google or your website. Their AI assistant may choose who gets considered, compared and booked. We test whether your clinic survives that decision.
+            Your future patient may never visit Google or your website. Their AI assistant chooses who gets considered, compared and booked. We test whether your clinic survives that decision.
           </p>
           <div className="flex flex-wrap gap-3 sm:gap-4 items-center text-[12.5px] sm:text-[13px] text-[#5A6058] font-medium pt-2">
             <span className="inline-flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-[#E3E6E1] shadow-xs">
@@ -267,8 +271,8 @@ export default function FunnelPage() {
           </div>
         </div>
 
-        {/* Right Scan Card Column */}
-        <div className="bg-white border border-[#E3E6E1] rounded-[16px] p-5 sm:p-[28px] flex flex-col gap-4 shadow-[0_4px_24px_rgba(20,25,20,0.06),0_1px_2px_rgba(20,25,20,0.04)] relative overflow-hidden">
+        {/* Scan Card — first thing under the hook on mobile */}
+        <div className="bg-white border border-[#E3E6E1] rounded-[16px] p-5 sm:p-[28px] flex flex-col gap-4 shadow-[0_4px_24px_rgba(20,25,20,0.06),0_1px_2px_rgba(20,25,20,0.04)] relative overflow-hidden order-2 lg:order-none lg:col-start-2 lg:row-start-1 lg:row-span-2">
           <div className="flex flex-col gap-1">
             <div className="flex justify-between items-center">
               <div className="font-bold text-[17px] text-[#191C1A]">Free surface scan</div>
@@ -277,7 +281,7 @@ export default function FunnelPage() {
               </span>
             </div>
             <div className="text-[13.5px] text-[#5A6058] leading-[1.5]">
-              Enter your website. We check what AI agents can actually read — in about 30 seconds.
+              See exactly what the AI sees on your site — and the gaps keeping you out of the answer. Takes 30 seconds.
             </div>
           </div>
 
@@ -295,7 +299,7 @@ export default function FunnelPage() {
               onClick={runScan}
               className="px-[20px] py-3 border-none rounded-lg bg-[oklch(0.48_0.10_160)] text-white text-[14px] font-semibold cursor-pointer font-sans whitespace-nowrap hover:bg-[oklch(0.42_0.10_160)] active:scale-[0.99] transition-all shadow-xs"
             >
-              Scan free
+              Show me what AI sees
             </button>
           </div>
 
